@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { AuthContext } from "../context/AuthProvider";
 import Swal from "sweetalert2";
 
-const IMGBB_API_KEY = "https://api.imgbb.com/1/upload"; // <-- Replace with your actual imgbb API key
+const IMGBB_API_KEY = "42a5137615ebf1a1e99a7d7cf8447e7d"; // <-- Replace with your actual imgbb API key
 
 const Register = () => {
   const [error, setError] = useState("");
@@ -13,6 +13,8 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadedImageURL, setUploadedImageURL] = useState(null);
+
+  console.log(uploadedImageURL);
 
   const navigate = useNavigate();
   const { register, googleLogin } = useContext(AuthContext);
@@ -108,6 +110,8 @@ const Register = () => {
     } finally {
       setIsLoading(false);
     }
+
+    console.log({name,email,password,uploadedImageURL});
   };
 
   const handleGoogleLogin = async () => {

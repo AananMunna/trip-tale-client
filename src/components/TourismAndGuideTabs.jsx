@@ -8,21 +8,21 @@ const TourismAndGuideTabs = () => {
   const [packages] = useState([
     {
       _id: "pkg1",
-      image: "https://source.unsplash.com/featured/?beach",
+      image: "https://passport-cdn.kiwicollection.com/blog/drive/uploads/2019/08/002478-15-beach-dining-Carlisle-Bay-693x390.jpg",
       title: "Sunny Beach Escape",
       tourType: "Leisure",
       price: 899,
     },
     {
       _id: "pkg2",
-      image: "https://source.unsplash.com/featured/?mountains",
+      image: "https://www.travelmate.com.bd/wp-content/uploads/2019/08/Jogi-Haphong.jpg.webp",
       title: "Mountain Adventure",
       tourType: "Adventure",
       price: 1299,
     },
     {
       _id: "pkg3",
-      image: "https://source.unsplash.com/featured/?city",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/2.%E0%A6%B6%E0%A6%BE%E0%A6%AA%E0%A6%B2%E0%A6%BE_%E0%A6%9A%E0%A6%A4%E0%A7%8D%E0%A6%AC%E0%A6%B0.jpg/960px-2.%E0%A6%B6%E0%A6%BE%E0%A6%AA%E0%A6%B2%E0%A6%BE_%E0%A6%9A%E0%A6%A4%E0%A7%8D%E0%A6%AC%E0%A6%B0.jpg",
       title: "City Explorer",
       tourType: "Urban",
       price: 599,
