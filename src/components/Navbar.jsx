@@ -24,7 +24,7 @@ export default function Navbar() {
   const navLinks = [
     { to: "/", label: "Home", icon: <FaHome /> },
     { to: "/community", label: "Community" },
-    { to: "/about", label: "About Us" },
+    { to: "/aboutUs", label: "About Us" },
     { to: "/trips", label: "Trips" },
   ];
 
