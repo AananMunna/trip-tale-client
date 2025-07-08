@@ -5,6 +5,7 @@ import Login from "./../pages/Login";
 import Register from "./../pages/Register";
 import NotFound from "./../pages/NotFound";
 import AboutUs from "../pages/AboutUs";
+import PackageDetails from "../components/PackageDetails";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: App },
       
+      { path: "/packages/:id", Component: PackageDetails },
       { path: "aboutUs", Component: AboutUs },
       { path: "login", Component: Login },
       { path: "register", Component: Register },
