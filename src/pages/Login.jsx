@@ -36,24 +36,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-gray-300 to-gray-100 dark:from-[#0f0f0f] dark:via-[#1a1a1a] dark:to-[#0f0f0f] transition-colors duration-500">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 transition-colors duration-700">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-[90%] max-w-md rounded-3xl bg-white/10 dark:bg-white/5 backdrop-blur-lg p-8 shadow-lg border border-white/20 dark:border-white/10"
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="w-[90%] max-w-md bg-white/10 dark:bg-gray-900/70 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-emerald-400/30 dark:border-cyan-400/40"
       >
-        <h2 className="text-center text-2xl font-semibold text-gray-800 dark:text-white mb-6 tracking-tight">
-          Sign in with your StudySync ID
+        <h2 className="text-center text-3xl font-extrabold text-white mb-8 tracking-wide drop-shadow-md">
+          🔐 TripTale Login
         </h2>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-6">
           <input
             type="email"
             name="email"
             required
-            placeholder="Email"
-            className="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-white/10 backdrop-blur text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Email address"
+            className="w-full px-5 py-3 rounded-xl bg-white/20 dark:bg-gray-800/30 placeholder-gray-200 dark:placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-cyan-300 transition"
           />
 
           <div className="relative">
@@ -62,11 +62,12 @@ const Login = () => {
               name="password"
               required
               placeholder="Password"
-              className="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-white/10 backdrop-blur text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-5 py-3 rounded-xl bg-white/20 dark:bg-gray-800/30 placeholder-gray-200 dark:placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-cyan-300 transition"
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-700 dark:text-gray-300"
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-white opacity-75 hover:opacity-100 transition"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
@@ -74,7 +75,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-black/80 dark:bg-white/10 text-white py-3 rounded-xl font-medium hover:bg-black transition-colors dark:hover:bg-white/20"
+            className="w-full py-3 bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-cyan-400 hover:to-emerald-400 rounded-xl text-gray-900 font-semibold shadow-lg shadow-cyan-500/40 transition"
           >
             Continue
           </button>
@@ -82,14 +83,14 @@ const Login = () => {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full border border-gray-300 dark:border-gray-700 py-3 rounded-xl text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10"
+            className="w-full py-3 border border-cyan-300 text-white rounded-xl hover:bg-cyan-600 transition"
           >
             Sign in with Google
           </button>
 
-          <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-center text-sm text-white/80 mt-4">
             Don’t have an account?{" "}
-            <Link to="/register" className="underline hover:text-blue-600">
+            <Link to="/register" className="underline hover:text-cyan-200">
               Register
             </Link>
           </p>
