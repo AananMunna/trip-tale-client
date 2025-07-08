@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router";
 import { motion } from "framer-motion";
 import { AuthContext } from "../context/AuthProvider";
 import Swal from "sweetalert2";
+import { saveUserToDB } from "../utils/saveUserToDB";
 
 const IMGBB_API_KEY = "42a5137615ebf1a1e99a7d7cf8447e7d"; // <-- Replace with your actual imgbb API key
 
@@ -59,87 +60,102 @@ const Register = () => {
     }
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
 
-    const form = e.target;
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-    const password = form.password.value;
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError("");
 
-    // Password regex: at least 8 chars, uppercase, lowercase, special char
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setError(
-        "Password must be at least 8 characters, including 1 uppercase, 1 lowercase, and 1 special character."
-      );
-      setIsLoading(false);
-      return;
-    }
+  const form = e.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const password = form.password.value;
 
-    try {
-      const userCredential = await register(email, password);
-      await updateProfile(userCredential.user, {
-        displayName: name,
-        photoURL: uploadedImageURL || undefined,
-      });
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    setError(
+      "Password must be at least 8 characters, including 1 uppercase, 1 lowercase, and 1 special character."
+    );
+    setIsLoading(false);
+    return;
+  }
 
-      Swal.fire({
-        title: "Welcome aboard!",
-        text: `Hello, ${name}! Your account was successfully created.`,
-        icon: "success",
-        timer: 2500,
-        timerProgressBar: true,
-        showConfirmButton: false,
-        background: "rgba(20, 20, 20, 0.95)",
-        color: "white",
-      });
+  try {
+    const userCredential = await register(email, password);
+    await updateProfile(userCredential.user, {
+      displayName: name,
+      photoURL: uploadedImageURL || undefined,
+    });
 
-      navigate("/assignments");
-    } catch (error) {
-      setError(error.message);
-      Swal.fire({
-        icon: "error",
-        title: "Registration failed",
-        text: error.message,
-        background: "rgba(20, 20, 20, 0.95)",
-        color: "white",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // ✅ Save to MongoDB
+    await saveUserToDB({
+      ...userCredential.user,
+      displayName: name,
+      photoURL: uploadedImageURL,
+    });
 
-    console.log({name,email,password,uploadedImageURL});
-  };
+    Swal.fire({
+      title: "Welcome aboard!",
+      text: `Hello, ${name}! Your account was successfully created.`,
+      icon: "success",
+      timer: 2500,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      background: "rgba(20, 20, 20, 0.95)",
+      color: "white",
+    });
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    try {
-      await googleLogin();
-      Swal.fire({
-        title: "Google login successful!",
-        icon: "success",
-        timer: 2000,
-        showConfirmButton: false,
-        background: "rgba(20, 20, 20, 0.95)",
-        color: "white",
-      });
-      navigate("/assignments");
-    } catch (error) {
-      setError(error.message);
-      Swal.fire({
-        icon: "error",
-        title: "Google login failed",
-        text: error.message,
-        background: "rgba(20, 20, 20, 0.95)",
-        color: "white",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    navigate("/assignments");
+  } catch (error) {
+    setError(error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Registration failed",
+      text: error.message,
+      background: "rgba(20, 20, 20, 0.95)",
+      color: "white",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+
+  console.log({ name, email, password, uploadedImageURL });
+};
+
+
+const handleGoogleLogin = async () => {
+  setIsLoading(true);
+  try {
+    const result = await googleLogin();
+    const user = result.user;
+
+    // ✅ Save to MongoDB
+    await saveUserToDB(user);
+
+    Swal.fire({
+      title: "Google login successful!",
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+      background: "rgba(20, 20, 20, 0.95)",
+      color: "white",
+    });
+
+    navigate("/assignments");
+  } catch (error) {
+    setError(error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Google login failed",
+      text: error.message,
+      background: "rgba(20, 20, 20, 0.95)",
+      color: "white",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen py-10 bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 flex items-center justify-center p-4 transition-colors duration-700">

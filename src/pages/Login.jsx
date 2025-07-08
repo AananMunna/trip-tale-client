@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
 import { useNavigate, Link } from "react-router";
 import { AuthContext } from "../context/AuthProvider";
+import { saveUserToDB } from "../utils/saveUserToDB";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +17,9 @@ const Login = () => {
     const password = e.target.password.value;
 
     login(email, password)
-      .then(() => {
+      .then((result) => {
+          saveUserToDB(result.user);
+
         Swal.fire("Welcome!", "You’re logged in.", "success");
         navigate("/assignments");
       })
@@ -25,15 +28,20 @@ const Login = () => {
       });
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await googleLogin();
-      Swal.fire("Google Login Success", "", "success");
-      navigate("/assignments");
-    } catch (error) {
-      Swal.fire("Google login failed", error.message, "error");
-    }
-  };
+const handleGoogleLogin = async () => {
+  try {
+    const result = await googleLogin(); // your firebase google login function
+    const user = result.user;
+
+    // Save or update user in MongoDB
+    await saveUserToDB(user);
+
+    Swal.fire("Google Login Success", "", "success");
+    navigate("/assignments");
+  } catch (error) {
+    Swal.fire("Google login failed", error.message, "error");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 transition-colors duration-700">
