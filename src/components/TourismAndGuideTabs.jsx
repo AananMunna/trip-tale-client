@@ -16,7 +16,7 @@ const TourismAndGuideTabs = () => {
     },
   });
 
-
+// console.log(packages);
 //   const [packages] = useState([
 //     {
 //       _id: "pkg1",
@@ -108,15 +108,17 @@ const TourismAndGuideTabs = () => {
         <TabPanel>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {packages.map((pkg) => (
+              
               <div
                 key={pkg._id}
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
               >
                 <img
-                  src={pkg.image}
+                  src={pkg.images}
                   alt={pkg.title}
                   className="h-48 w-full object-cover"
                 />
+                {console.log(pkg.images)}
                 <div className="p-5">
                   <h3 className="text-xl font-semibold mb-1">{pkg.title}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
