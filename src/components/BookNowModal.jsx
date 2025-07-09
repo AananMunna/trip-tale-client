@@ -6,8 +6,10 @@ import Swal from "sweetalert2";
 import { AuthContext } from "./../context/AuthProvider";
 import useAxiosSecure from "./../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import {  useNavigate } from "react-router";
 
 const BookNowModal = ({ isOpen, closeModal, packageData }) => {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
   // console.log(user);
@@ -25,6 +27,9 @@ const BookNowModal = ({ isOpen, closeModal, packageData }) => {
   });
 
   const handleBooking = async () => {
+    if(!user?.email){
+      return navigate('/login')
+    }
     const bookingInfo = {
       packageId: packageData?._id,
       packageTitle: packageData?.title,
