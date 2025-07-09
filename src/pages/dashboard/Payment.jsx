@@ -76,11 +76,11 @@ const Payment = () => {
         date: new Date().toISOString(),
       };
 
-      await axiosSecure.post("/dashboard/payment-history", paymentRecord);
+      await axiosSecure.post("/payment-history", paymentRecord);
       await axiosSecure.patch(`/bookings/${id}`, { status: "confirmed" });
 
       Swal.fire("Payment Successful", "Your tour is confirmed!", "success");
-      navigate('/payment-history')
+      navigate('/dashboard/payment-history')
     } else {
       Swal.fire("Payment Incomplete", "Something went wrong", "error");
     }
@@ -88,30 +88,60 @@ const Payment = () => {
     setProcessing(false);
   };
 
+  
+const isDarkMode = document.documentElement.classList.contains("dark");
+
+
+  const cardStyle = {
+  style: {
+    base: {
+      color: isDarkMode ? "#f3f4f6" : "#1f2937", // light: gray-800, dark: gray-100
+      fontSize: "16px",
+      iconColor: isDarkMode ? "#10B981" : "#059669", // emerald-400 vs 600
+      backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb", // bg-gray-800 vs gray-50
+      "::placeholder": {
+        color: isDarkMode ? "#9CA3AF" : "#6B7280", // gray-400 vs 600
+      },
+    },
+    invalid: {
+      color: "#ef4444", // red-500
+      iconColor: "#ef4444",
+    },
+  },
+};
+
+
   return (
-    <section className="max-w-xl mx-auto mt-10 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center text-emerald-600 dark:text-emerald-400">
-        Complete Your Payment
-      </h2>
+   <section className="max-w-xl mx-auto mt-16 p-6 md:p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 transition-all duration-300">
+  <h2 className="text-3xl font-extrabold mb-6 text-center text-emerald-700 dark:text-emerald-400 tracking-tight">
+    Complete Your Payment
+  </h2>
 
-      {booking && (
-        <div className="mb-4 text-center">
-          <p>Package: <strong>{booking.packageTitle}</strong></p>
-          <p>Price: ৳{booking.price}</p>
-        </div>
-      )}
+  {booking && (
+    <div className="mb-6 text-center text-lg font-medium text-gray-800 dark:text-gray-200 space-y-1">
+      <p>📦 Package: <span className="font-semibold">{booking.packageTitle}</span></p>
+      <p>💵 Amount: <span className="text-emerald-600 dark:text-emerald-400 font-bold">৳{booking.price}</span></p>
+    </div>
+  )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <CardElement className="p-3 border dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white" />
-        <button
-          type="submit"
-          disabled={!stripe || !clientSecret || processing}
-          className="w-full px-4 py-2 bg-emerald-600 text-white font-semibold rounded hover:bg-emerald-700 disabled:opacity-50"
-        >
-          {processing ? "Processing..." : `Pay Now $ ${booking.price}`}
-        </button>
-      </form>
-    </section>
+  <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-4 transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500">
+<div className={`p-4 rounded-lg shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+  <CardElement options={cardStyle} />
+</div>
+
+    </div>
+
+    <button
+      type="submit"
+      disabled={!stripe || !clientSecret || processing}
+      className="w-full px-6 py-3 text-lg font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-all duration-200 shadow-md"
+    >
+      {processing ? "Processing..." : `Pay Now ৳${booking?.price}`}
+    </button>
+  </form>
+</section>
+
   );
 };
 
