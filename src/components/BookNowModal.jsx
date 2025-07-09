@@ -43,7 +43,7 @@ const BookNowModal = ({ isOpen, closeModal, packageData }) => {
       createdAt: new Date().toISOString(),
     };
 
-    console.log(bookingInfo);
+    // console.log(bookingInfo);
 
     try {
       const res = await axiosSecure.post("/bookings", bookingInfo);
@@ -56,7 +56,7 @@ const BookNowModal = ({ isOpen, closeModal, packageData }) => {
         }).then(() => {
           closeModal();
           // Optional: Navigate to My Bookings
-          // navigate("/dashboard/my-bookings");
+          navigate("/dashboard/my-bookings");
         });
       }
     } catch (err) {

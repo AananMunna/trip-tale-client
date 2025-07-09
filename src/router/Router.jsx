@@ -15,6 +15,7 @@ import MyProfile from "../pages/dashboard/MyProfile";
 import MyBookings from "../pages/dashboard/MyBookings";
 import PaymentHistory from "../pages/dashboard/PaymentHistory";
 import UserDashboardHome from "../pages/dashboard/UserDashboardHome";
+import Payment from "../pages/dashboard/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -34,7 +35,10 @@ export const router = createBrowserRouter([
     Component: DashboardLayout,
     children: [
       { index: true, Component: UserDashboardHome },
-
+      {
+        path: "payment/:id",
+        Component: Payment,
+      },
       { path: "dashboardHome", Component: UserDashboardHome },
       { path: "my-profile", Component: MyProfile },
       { path: "my-bookings", Component: MyBookings },
