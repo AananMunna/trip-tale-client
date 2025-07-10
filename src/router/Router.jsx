@@ -16,6 +16,7 @@ import MyBookings from "../pages/dashboard/MyBookings";
 import PaymentHistory from "../pages/dashboard/PaymentHistory";
 import UserDashboardHome from "../pages/dashboard/UserDashboardHome";
 import Payment from "../pages/dashboard/Payment";
+import AddStory from "../pages/dashboard/AddStory";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
         Component: Payment,
       },
       { path: "dashboardHome", Component: UserDashboardHome },
+      { path: "add-story", Component: AddStory },
       { path: "my-profile", Component: MyProfile },
       { path: "my-bookings", Component: MyBookings },
       { path: "payment-history", Component: PaymentHistory },

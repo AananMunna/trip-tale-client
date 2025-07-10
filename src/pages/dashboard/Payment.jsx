@@ -77,7 +77,7 @@ const Payment = () => {
       };
 
       await axiosSecure.post("/payment-history", paymentRecord);
-      await axiosSecure.patch(`/bookings/${id}`, { status: "confirmed" });
+      await axiosSecure.patch(`/bookings/${id}`, { status: "in-review" });
 
       Swal.fire("Payment Successful", "Your tour is confirmed!", "success");
       navigate('/dashboard/payment-history')

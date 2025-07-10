@@ -29,6 +29,11 @@ const DashboardLayout = () => {
       label: "Payment History",
       icon: <Wallet className="w-5 h-5" />,
     },
+    {
+      path: "/dashboard/add-story",
+      label: "Add Story",
+      icon: <Wallet className="w-5 h-5" />,
+    },
   ];
 
   return (
