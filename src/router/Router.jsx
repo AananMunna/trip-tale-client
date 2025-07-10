@@ -20,6 +20,7 @@ import AddStory from "../pages/dashboard/AddStory";
 import ManageStories from "../pages/dashboard/ManageStories";
 import JoinAsTourGuide from "../pages/dashboard/JoinAsTourGuide";
 import TripPage from "../pages/TripPage";
+import CommunityPage from "../pages/CommunityPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: App },
       { path: "packages/:id", Component: PackageDetails },
+      { path: "community", Component: CommunityPage },
       { path: "aboutUs", Component: AboutUs },
       { path: "all-trips", Component: TripPage },
       { path: "login", Component: Login },

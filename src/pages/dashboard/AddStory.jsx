@@ -13,34 +13,37 @@ const AddStory = () => {
   const [uploading, setUploading] = useState(false);
 
   const axiosSecure = useAxiosSecure();
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const imgbbAPIKey = import.meta.env.VITE_IMGBB_API_KEY;
+  // Cloudinary credentials from .env
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-  // Preview and store selected images
+  // Preview & store selected images
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-
-    const previews = files.map((file) => URL.createObjectURL(file));
+    const previews = files.map(file => URL.createObjectURL(file));
     setPreviewURLs(previews);
   };
 
-  // Upload to imgbb and return image URL
-  const uploadToImgbb = async (imageFile) => {
+  // Upload image to Cloudinary
+  const uploadToCloudinary = async (file) => {
     const formData = new FormData();
-    formData.append("image", imageFile);
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
 
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`, {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: "POST",
-      body: formData,
+      body: formData
     });
 
     const data = await res.json();
-    return data.data.url;
+    return data.secure_url; // Cloudinary returns secure URL directly
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (images.length === 0) {
@@ -53,7 +56,7 @@ const AddStory = () => {
     try {
       const uploadedURLs = [];
       for (const img of images) {
-        const url = await uploadToImgbb(img);
+        const url = await uploadToCloudinary(img);
         uploadedURLs.push(url);
       }
 
@@ -61,7 +64,7 @@ const AddStory = () => {
         title,
         text,
         images: uploadedURLs,
-        userEmail:user?.email,
+        userEmail: user?.email,
       };
 
       const res = await axiosSecure.post("/stories", storyData);
@@ -78,6 +81,7 @@ const AddStory = () => {
     }
   };
 
+  // Remove image from preview & array
   const removeImage = (index) => {
     const newImages = [...images];
     const newPreviews = [...previewURLs];

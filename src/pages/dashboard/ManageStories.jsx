@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { AuthContext } from "../../context/AuthProvider";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthProvider";
 
 const ManageStories = () => {
   const axiosSecure = useAxiosSecure();
@@ -18,11 +18,10 @@ const ManageStories = () => {
   const [newImages, setNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  const imgbbAPIKey = import.meta.env.VITE_IMGBB_API_KEY;
 
   useEffect(() => {
     axiosSecure
-      .get(`/stories?email=${user?.email}`)
+      .get(`/story?email=${user?.email}`)
       .then((res) => setStories(res.data))
       .catch((err) => console.error(err));
   }, [user?.email, axiosSecure]);
@@ -68,15 +67,19 @@ const ManageStories = () => {
     setNewImages([...e.target.files]);
   };
 
-  const uploadToImgbb = async (img) => {
-    const formData = new FormData();
-    formData.append("image", img);
-    const res = await axios.post(
-      `https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`,
-      formData
-    );
-    return res.data.data.url;
-  };
+const uploadToCloudinary = async (img) => {
+  const formData = new FormData();
+  formData.append("file", img);
+  formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+  const res = await axios.post(
+    `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    formData
+  );
+
+  return res.data.secure_url;
+};
+
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -85,7 +88,7 @@ const ManageStories = () => {
     try {
       const newImageURLs = [];
       for (const img of newImages) {
-        const url = await uploadToImgbb(img);
+        const url = await uploadToCloudinary(img);
         newImageURLs.push(url);
       }
 

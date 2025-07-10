@@ -20,45 +20,52 @@ const Register = () => {
   const navigate = useNavigate();
   const { register, googleLogin } = useContext(AuthContext);
 
-  // Upload image to imgbb
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+// Upload image to Cloudinary
+const handleImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    setUploading(true);
-    setError("");
+  setUploading(true);
+  setError("");
 
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
         method: "POST",
         body: formData,
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setUploadedImageURL(data.data.url);
-        Swal.fire({
-          icon: "success",
-          title: "Image uploaded!",
-          toast: true,
-          position: "top-end",
-          timer: 2000,
-          showConfirmButton: false,
-          background: "rgba(20, 20, 20, 0.95)",
-          color: "white",
-        });
-      } else {
-        throw new Error("Image upload failed");
       }
-    } catch (err) {
-      setError("Failed to upload image. Try again.");
-    } finally {
-      setUploading(false);
+    );
+
+    const data = await res.json();
+
+    if (data.secure_url) {
+      setUploadedImageURL(data.secure_url);
+      Swal.fire({
+        icon: "success",
+        title: "Image uploaded!",
+        toast: true,
+        position: "top-end",
+        timer: 2000,
+        showConfirmButton: false,
+        background: "rgba(20, 20, 20, 0.95)",
+        color: "white",
+      });
+    } else {
+      throw new Error("Image upload failed");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Failed to upload image. Try again.");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
 
 const handleRegister = async (e) => {
