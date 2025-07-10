@@ -39,6 +39,11 @@ const DashboardLayout = () => {
       label: "Manage Stories",
       icon: <Wallet className="w-5 h-5" />,
     },
+    {
+      path: "/dashboard/join-as-tour-guide",
+      label: "Join as tour guide",
+      icon: <Wallet className="w-5 h-5" />,
+    },
   ];
 
   return (
