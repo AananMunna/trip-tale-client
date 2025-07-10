@@ -6,45 +6,52 @@ import { motion } from "framer-motion";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user,userRole } = useContext(AuthContext);
 
-  const navLinks = [
-    {
-      path: "/dashboard/dashboardHome",
-      label: "Home",
-      icon: <Home className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/my-profile",
-      label: "My Profile",
-      icon: <User className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/my-bookings",
-      label: "My Bookings",
-      icon: <CalendarCheck className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/payment-history",
-      label: "Payment History",
-      icon: <Wallet className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/add-story",
-      label: "Add Stories",
-      icon: <Wallet className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/manage-stories",
-      label: "Manage Stories",
-      icon: <Wallet className="w-5 h-5" />,
-    },
-    {
-      path: "/dashboard/join-as-tour-guide",
-      label: "Join as tour guide",
-      icon: <Wallet className="w-5 h-5" />,
-    },
-  ];
+const navLinks = [
+  {
+    path: "/dashboard/dashboardHome",
+    label: "Home",
+    icon: <Home className="w-5 h-5" />,
+  },
+  {
+    path: "/dashboard/my-profile",
+    label: "My Profile",
+    icon: <User className="w-5 h-5" />,
+  },
+  {
+    path: "/dashboard/my-bookings",
+    label: "My Bookings",
+    icon: <CalendarCheck className="w-5 h-5" />,
+    allowedRoles: ["tourist"], // ✅ tourist only
+  },
+  {
+    path: "/dashboard/payment-history",
+    label: "Payment History",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["tourist"], // ✅ tourist only
+  },
+  {
+    path: "/dashboard/add-story",
+    label: "Add Stories",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["tourist", "guide"], // ✅ both
+  },
+  {
+    path: "/dashboard/manage-stories",
+    label: "Manage Stories",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["tourist", "guide"], // ✅ both
+  },
+  {
+    path: "/dashboard/join-as-tour-guide",
+    label: "Join as tour guide",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["tourist"], // ✅ only tourists should see this
+  },
+  // Add more routes as needed
+];
+
 
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
@@ -75,26 +82,32 @@ const DashboardLayout = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col gap-2 mt-6 px-4">
-          {navLinks.map((link, idx) => (
-            <NavLink
-              key={idx}
-              to={link.path}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all group ${
-                  isActive
-                    ? "bg-emerald-600 text-white"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-900"
-                }`
-              }
-            >
-              <span className="group-hover:scale-110 transition-transform duration-200">
-                {link.icon}
-              </span>
-              <span>{link.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+       <nav className="flex flex-col gap-2 mt-6 px-4">
+  {navLinks
+    .filter(
+      (link) =>
+        !link.allowedRoles || link.allowedRoles.includes(userRole)
+    )
+    .map((link, idx) => (
+      <NavLink
+        key={idx}
+        to={link.path}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all group ${
+            isActive
+              ? "bg-emerald-600 text-white"
+              : "text-gray-700 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-900"
+          }`
+        }
+      >
+        <span className="group-hover:scale-110 transition-transform duration-200">
+          {link.icon}
+        </span>
+        <span>{link.label}</span>
+      </NavLink>
+    ))}
+</nav>
+
       </aside>
 
       {/* Main Content Area */}

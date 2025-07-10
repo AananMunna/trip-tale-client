@@ -8,12 +8,15 @@ import {
   signOut
 } from "firebase/auth";
 import { auth } from "../firebase.config";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
   // Register
   const register = (email, password) => {
@@ -50,9 +53,28 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  // Fetch role after login
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure
+        .get(`/users/${user.email}`)
+        .then((res) => {
+          setUserRole(res.data?.role || "tourist");
+        })
+        .catch((err) => {
+          console.error("Error fetching user role:", err);
+          setUserRole("tourist");
+        });
+    } else {
+      setUserRole(null);
+    }
+  }, [user?.email, axiosSecure]);
+
   const authInfo = {
     user,
     loading,
+    userRole,
+    setUserRole,
     register,
     login,
     logout,

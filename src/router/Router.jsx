@@ -21,6 +21,8 @@ import ManageStories from "../pages/dashboard/ManageStories";
 import JoinAsTourGuide from "../pages/dashboard/JoinAsTourGuide";
 import TripPage from "../pages/TripPage";
 import CommunityPage from "../pages/CommunityPage";
+import ProtectedRoute from "../routes/ProtectedRoute";
+import Unauthorized from "../pages/Unauthorized";
 
 export const router = createBrowserRouter([
   {
@@ -52,8 +54,19 @@ export const router = createBrowserRouter([
       { path: "join-as-tour-guide", Component: JoinAsTourGuide },
       { path: "my-profile", Component: MyProfile },
       { path: "my-bookings", Component: MyBookings },
-      { path: "payment-history", Component: PaymentHistory },
+      {
+        path: "payment-history",
+        element: (
+          <ProtectedRoute allowedRoles={["tourist"]}>
+            <PaymentHistory />
+          </ProtectedRoute>
+        ),
+      },
     ],
+  },
+  {
+    path: '/unauthorized',
+    Component: Unauthorized
   },
   {
     path: "*",
