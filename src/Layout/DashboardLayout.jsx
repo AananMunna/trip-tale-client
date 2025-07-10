@@ -49,6 +49,12 @@ const navLinks = [
     icon: <Wallet className="w-5 h-5" />,
     allowedRoles: ["tourist"], // ✅ only tourists should see this
   },
+  {
+    path: "/dashboard/my-assigned-tours",
+    label: "Assigned Tours",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["guide"], // ✅ only tourists should see this
+  },
   // Add more routes as needed
 ];
 

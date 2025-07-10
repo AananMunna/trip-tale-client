@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthProvider";
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, userRole, loading } = useContext(AuthContext);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+if (loading || userRole === null) return <p>Loading...</p>;
 
   if (!user || !allowedRoles.includes(userRole)) {
     return <Navigate to="/unauthorized" replace />;
