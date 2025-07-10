@@ -31,7 +31,12 @@ const DashboardLayout = () => {
     },
     {
       path: "/dashboard/add-story",
-      label: "Add Story",
+      label: "Add Stories",
+      icon: <Wallet className="w-5 h-5" />,
+    },
+    {
+      path: "/dashboard/manage-stories",
+      label: "Manage Stories",
       icon: <Wallet className="w-5 h-5" />,
     },
   ];
