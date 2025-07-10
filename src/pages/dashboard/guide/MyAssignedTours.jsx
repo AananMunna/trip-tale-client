@@ -38,7 +38,7 @@ const MyAssignedTours = () => {
   });
 
   const handleAccept = (tourId) => {
-    updateStatusMutation.mutate({ tourId, status: "Accepted" });
+    updateStatusMutation.mutate({ tourId, status: "accepted" });
   };
 
   const handleReject = (tourId) => {
@@ -52,7 +52,7 @@ const MyAssignedTours = () => {
       confirmButtonText: "Yes, reject it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        updateStatusMutation.mutate({ tourId, status: "Rejected" });
+        updateStatusMutation.mutate({ tourId, status: "rejected" });
       }
     });
   };
@@ -107,10 +107,10 @@ const MyAssignedTours = () => {
               </td>
               <td className="py-3 px-6 flex gap-2">
                 <button
-                  disabled={tour.status !== "In Review" || updateStatusMutation.isLoading}
+                  disabled={tour.status !== "in-review" || updateStatusMutation.isLoading}
                   onClick={() => handleAccept(tour._id)}
                   className={`px-3 py-1 rounded text-white text-sm ${
-                    tour.status === "In Review"
+                    tour.status === "in-review"
                       ? "bg-green-600 hover:bg-green-700"
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
@@ -118,10 +118,10 @@ const MyAssignedTours = () => {
                   Accept
                 </button>
                 <button
-                  disabled={tour.status !== "Pending" || updateStatusMutation.isLoading}
+                  disabled={tour.status !== "pending" || updateStatusMutation.isLoading}
                   onClick={() => handleReject(tour._id)}
                   className={`px-3 py-1 rounded text-white text-sm ${
-                    tour.status === "Pending"
+                    tour.status === "pending"
                       ? "bg-red-600 hover:bg-red-700"
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
