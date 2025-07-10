@@ -19,6 +19,7 @@ import Payment from "../pages/dashboard/Payment";
 import AddStory from "../pages/dashboard/AddStory";
 import ManageStories from "../pages/dashboard/ManageStories";
 import JoinAsTourGuide from "../pages/dashboard/JoinAsTourGuide";
+import TripPage from "../pages/TripPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       { index: true, Component: App },
       { path: "packages/:id", Component: PackageDetails },
       { path: "aboutUs", Component: AboutUs },
+      { path: "all-trips", Component: TripPage },
       { path: "login", Component: Login },
       { path: "register", Component: Register },
       { path: "*", Component: NotFound },

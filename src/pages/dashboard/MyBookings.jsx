@@ -1,16 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-// import useAxiosSecure from "../hooks/useAxiosSecure";
-import { useContext } from "react";
-// import { AuthContext } from "../context/AuthProvider";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Link } from "react-router";
 import { Trash2, CreditCard } from "lucide-react";
+import Confetti from "react-confetti";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { AuthContext } from "../../context/AuthProvider";
-import useAxiosSecure from './../../hooks/useAxiosSecure';
+import useWindowSize from "react-use/lib/useWindowSize"; // ✅ useWindowSize for full screen confetti
 
 const MyBookings = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
+  const { width, height } = useWindowSize(); // ✅ Get screen size
+  const [showConfetti, setShowConfetti] = useState(false); // ✅ Confetti state
 
   const { data: bookings = [], refetch, isLoading } = useQuery({
     queryKey: ["userBookings", user?.email],
@@ -19,6 +21,16 @@ const MyBookings = () => {
       return res.data;
     },
   });
+
+  // ✅ Show confetti if bookings > 3
+  useEffect(() => {
+    if (bookings.length > 3) {
+      setShowConfetti(true);
+      setTimeout(() => {
+        setShowConfetti(false); // hide after 5 seconds
+      }, 5000);
+    }
+  }, [bookings]);
 
   const handleCancel = async (id) => {
     const confirm = await Swal.fire({
@@ -41,6 +53,9 @@ const MyBookings = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
+      {/* 🎉 Confetti will show when more than 3 bookings */}
+      {showConfetti && <Confetti width={width} height={height} />}
+
       <h2 className="text-2xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">
         My Bookings
       </h2>
@@ -57,19 +72,10 @@ const MyBookings = () => {
               className="border dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col md:flex-row justify-between items-start md:items-center"
             >
               <div className="flex flex-col gap-1 text-sm text-gray-800 dark:text-gray-100">
-                <p>
-                  <strong>Title:</strong> {booking.packageTitle}
-                </p>
-                <p>
-                  <strong>Date:</strong>{" "}
-                  {new Date(booking.tourDate).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Price:</strong> ৳{booking.price}
-                </p>
-                <p>
-                  <strong>Guide:</strong> {booking.tourGuide}
-                </p>
+                <p><strong>Title:</strong> {booking.packageTitle}</p>
+                <p><strong>Date:</strong> {new Date(booking.tourDate).toLocaleDateString()}</p>
+                <p><strong>Price:</strong> ৳{booking.price}</p>
+                <p><strong>Guide:</strong> {booking.tourGuide}</p>
                 <p>
                   <strong>Status:</strong>{" "}
                   <span

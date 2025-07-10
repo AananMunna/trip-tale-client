@@ -25,7 +25,7 @@ export default function Navbar() {
     { to: "/", label: "Home", icon: <FaHome /> },
     { to: "/community", label: "Community" },
     { to: "/aboutUs", label: "About Us" },
-    { to: "/trips", label: "Trips" },
+    { to: "/all-trips", label: "Trips" },
   ];
 
   useEffect(() => {
