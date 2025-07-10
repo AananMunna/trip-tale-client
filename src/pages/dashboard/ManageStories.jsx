@@ -4,14 +4,21 @@ import Swal from "sweetalert2";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { AuthContext } from "../../context/AuthProvider";
+import axios from "axios";
 
 const ManageStories = () => {
   const axiosSecure = useAxiosSecure();
-  const [stories, setStories] = useState([]);
   const { user } = useContext(AuthContext);
+
+  const [stories, setStories] = useState([]);
   const [editStory, setEditStory] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editText, setEditText] = useState("");
+  const [editImages, setEditImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  const imgbbAPIKey = import.meta.env.VITE_IMGBB_API_KEY;
 
   useEffect(() => {
     axiosSecure
@@ -49,25 +56,66 @@ const ManageStories = () => {
     setEditStory(story);
     setEditTitle(story.title);
     setEditText(story.text);
+    setEditImages(story.images);
+    setNewImages([]);
+  };
+
+  const handleImageRemove = (index) => {
+    setEditImages(editImages.filter((_, i) => i !== index));
+  };
+
+  const handleNewImageChange = (e) => {
+    setNewImages([...e.target.files]);
+  };
+
+  const uploadToImgbb = async (img) => {
+    const formData = new FormData();
+    formData.append("image", img);
+    const res = await axios.post(
+      `https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`,
+      formData
+    );
+    return res.data.data.url;
   };
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
+
     try {
+      const newImageURLs = [];
+      for (const img of newImages) {
+        const url = await uploadToImgbb(img);
+        newImageURLs.push(url);
+      }
+
+      const removedImages = editStory.images.filter(
+        (img) => !editImages.includes(img)
+      );
+
       const res = await axiosSecure.put(`/stories/${editStory._id}`, {
         title: editTitle,
         text: editText,
+        removedImages,
+        newImageURLs,
       });
+
       if (res.data.modifiedCount > 0) {
         Swal.fire("Updated!", "Your story has been updated.", "success");
         setStories((prev) =>
-          prev.map((s) => (s._id === editStory._id ? { ...s, title: editTitle, text: editText } : s))
+          prev.map((s) =>
+            s._id === editStory._id
+              ? { ...s, title: editTitle, text: editText, images: [...editImages, ...newImageURLs] }
+              : s
+          )
         );
         setEditStory(null);
       }
     } catch (err) {
       console.error(err);
       Swal.fire("Error!", "Failed to update story.", "error");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -144,6 +192,32 @@ const ManageStories = () => {
                   className="w-full p-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
                 />
               </div>
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">Existing Images</label>
+                <div className="flex flex-wrap gap-2">
+                  {editImages.map((img, idx) => (
+                    <div key={idx} className="relative">
+                      <img src={img} className="w-20 h-20 object-cover rounded border" />
+                      <button
+                        type="button"
+                        onClick={() => handleImageRemove(idx)}
+                        className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1 rounded-full"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">Add New Images</label>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleNewImageChange}
+                  className="text-gray-800 dark:text-white"
+                />
+              </div>
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
@@ -154,9 +228,10 @@ const ManageStories = () => {
                 </button>
                 <button
                   type="submit"
+                  disabled={uploading}
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded"
                 >
-                  Update
+                  {uploading ? "Updating..." : "Update"}
                 </button>
               </div>
             </form>
