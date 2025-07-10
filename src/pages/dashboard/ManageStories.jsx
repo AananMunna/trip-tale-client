@@ -1,7 +1,5 @@
 // ManageStories.jsx
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router";
-// import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -11,7 +9,9 @@ const ManageStories = () => {
   const axiosSecure = useAxiosSecure();
   const [stories, setStories] = useState([]);
   const { user } = useContext(AuthContext);
-
+  const [editStory, setEditStory] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     axiosSecure
@@ -42,6 +42,32 @@ const ManageStories = () => {
         console.error(err);
         Swal.fire("Error!", "Failed to delete story.", "error");
       }
+    }
+  };
+
+  const handleEditClick = (story) => {
+    setEditStory(story);
+    setEditTitle(story.title);
+    setEditText(story.text);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axiosSecure.put(`/stories/${editStory._id}`, {
+        title: editTitle,
+        text: editText,
+      });
+      if (res.data.modifiedCount > 0) {
+        Swal.fire("Updated!", "Your story has been updated.", "success");
+        setStories((prev) =>
+          prev.map((s) => (s._id === editStory._id ? { ...s, title: editTitle, text: editText } : s))
+        );
+        setEditStory(null);
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error!", "Failed to update story.", "error");
     }
   };
 
@@ -76,12 +102,12 @@ const ManageStories = () => {
                 ))}
               </div>
               <div className="flex justify-between items-center">
-                <Link
-                  to={`/dashboard/edit-story/${story._id}`}
+                <button
+                  onClick={() => handleEditClick(story)}
                   className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
                 >
                   <FaEdit /> Edit
-                </Link>
+                </button>
                 <button
                   onClick={() => handleDelete(story._id)}
                   className="text-red-500 hover:text-red-700 flex items-center gap-1"
@@ -91,6 +117,50 @@ const ManageStories = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editStory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Edit Story</h3>
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">Title</label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full p-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-700 dark:text-gray-300">Text</label>
+                <textarea
+                  rows={4}
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  className="w-full p-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditStory(null)}
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </section>
