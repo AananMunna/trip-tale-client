@@ -3,13 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { FaMapMarkedAlt, FaMoneyBillWave, FaClock } from "react-icons/fa";
 import BookNowModal from "../components/BookNowModal";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import PremiumGallery from "./PremiumGallery";
+import { AuthContext } from "../context/AuthProvider";
 
 const PackageDetails = () => {
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
+  const {userRole} = useContext(AuthContext)
 
   const { data: packageData, isLoading, isError } = useQuery({
     queryKey: ["packageDetails", id],
@@ -72,12 +74,15 @@ const PackageDetails = () => {
             </p>
           </div>
 
+
+          {userRole === 'tourist' && (
           <button
             onClick={() => setIsBookModalOpen(true)}
             className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 transition rounded-full text-white font-medium mt-4 shadow"
           >
             Book Now
           </button>
+)}
         </div>
       </div>
 

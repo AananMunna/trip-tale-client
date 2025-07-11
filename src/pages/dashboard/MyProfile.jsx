@@ -5,7 +5,7 @@ import useAxiosSecure from "./../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
 const MyProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, userRole } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
 
   const [bookingStats, setBookingStats] = useState({
@@ -104,6 +104,7 @@ const MyProfile = () => {
       </div>
 
       {/* Booking Stats */}
+      {userRole === 'tourist' && (
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <div className="bg-emerald-100 dark:bg-emerald-900 p-4 rounded-xl text-center">
           <p className="text-sm text-gray-600 dark:text-gray-300">Total Bookings</p>
@@ -124,6 +125,7 @@ const MyProfile = () => {
           </p>
         </div>
       </div>
+)}
 
       {/* Update Form */}
       <form onSubmit={handleUpdate} className="space-y-4">
