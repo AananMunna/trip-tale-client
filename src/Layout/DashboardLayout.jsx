@@ -55,6 +55,12 @@ const navLinks = [
     icon: <Wallet className="w-5 h-5" />,
     allowedRoles: ["guide"], // ✅ only tourists should see this
   },
+  {
+    path: "/dashboard/add-package",
+    label: "Add Package",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["admin"], // ✅ only tourists should see this
+  },
   // Add more routes as needed
 ];
 

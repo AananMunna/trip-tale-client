@@ -24,6 +24,7 @@ import CommunityPage from "../pages/CommunityPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import Unauthorized from "../pages/Unauthorized";
 import MyAssignedTours from "../pages/dashboard/guide/MyAssignedTours";
+import AddPackage from "../pages/dashboard/AddPackage";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +77,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["tourist"]}>
             <PaymentHistory />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "add-package",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AddPackage />
           </ProtectedRoute>
         ),
       },
