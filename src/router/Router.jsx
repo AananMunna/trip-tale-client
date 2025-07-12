@@ -10,7 +10,7 @@ import NotFound from "./../pages/NotFound";
 import AboutUs from "../pages/AboutUs";
 import PackageDetails from "../components/PackageDetails";
 
-// dashboard pages for normal users
+// dashboard pages 
 import MyProfile from "../pages/dashboard/MyProfile";
 import MyBookings from "../pages/dashboard/MyBookings";
 import PaymentHistory from "../pages/dashboard/PaymentHistory";
@@ -25,6 +25,7 @@ import ProtectedRoute from "../routes/ProtectedRoute";
 import Unauthorized from "../pages/Unauthorized";
 import MyAssignedTours from "../pages/dashboard/guide/MyAssignedTours";
 import AddPackage from "../pages/dashboard/AddPackage";
+import ManageUsers from "../pages/admin/ManageUsers";
 
 export const router = createBrowserRouter([
   {
@@ -85,6 +86,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["admin"]}>
             <AddPackage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <ManageUsers />
           </ProtectedRoute>
         ),
       },
