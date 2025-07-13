@@ -27,6 +27,7 @@ import MyAssignedTours from "../pages/dashboard/guide/MyAssignedTours";
 import AddPackage from "../pages/dashboard/AddPackage";
 import ManageUsers from "../pages/admin/ManageUsers";
 import ManageTourGuideCandidates from "../pages/admin/ManageTourGuideCandidates";
+import GuideProfile from "../components/GuideProfile";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: App },
       { path: "packages/:id", Component: PackageDetails },
+      { path: "/guide/:id", Component: GuideProfile },
       { path: "community", Component: CommunityPage },
       { path: "aboutUs", Component: AboutUs },
       { path: "all-trips", Component: TripPage },
