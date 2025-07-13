@@ -26,6 +26,7 @@ import Unauthorized from "../pages/Unauthorized";
 import MyAssignedTours from "../pages/dashboard/guide/MyAssignedTours";
 import AddPackage from "../pages/dashboard/AddPackage";
 import ManageUsers from "../pages/admin/ManageUsers";
+import ManageTourGuideCandidates from "../pages/admin/ManageTourGuideCandidates";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +95,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["admin"]}>
             <ManageUsers />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "manage-candidates",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <ManageTourGuideCandidates />
           </ProtectedRoute>
         ),
       },

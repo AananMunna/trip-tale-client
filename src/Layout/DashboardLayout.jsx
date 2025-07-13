@@ -67,6 +67,12 @@ const navLinks = [
     icon: <Wallet className="w-5 h-5" />,
     allowedRoles: ["admin"], // ✅ only tourists should see this
   },
+  {
+    path: "/dashboard/manage-candidates",
+    label: "Manage Candidates",
+    icon: <Wallet className="w-5 h-5" />,
+    allowedRoles: ["admin"], // ✅ only tourists should see this
+  },
   // Add more routes as needed
 ];
 
