@@ -5,26 +5,35 @@ const ThemeToggle = ({ darkMode, setDarkMode }) => {
   return (
     <motion.button
       onClick={() => setDarkMode((prev) => !prev)}
-      className="relative w-16 h-9 flex items-center px-1 rounded-full bg-gray-200 dark:bg-gray-800 shadow-inner border border-gray-300/50 dark:border-white/10 backdrop-blur-md transition-colors duration-300"
       title="Toggle Theme"
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.94 }}
+      className={`relative w-[72px] h-[38px] flex items-center px-1 rounded-full 
+        border transition-colors duration-300 
+        ${
+          darkMode
+            ? "bg-gray-800 border-white/10 shadow-[inset_2px_2px_6px_rgba(255,255,255,0.05),inset_-2px_-2px_6px_rgba(0,0,0,0.4)]"
+            : "bg-gray-200 border-gray-300 shadow-[inset_2px_2px_6px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.8)]"
+        }`}
     >
+      {/* Sliding Icon Bubble */}
       <motion.div
         layout
         transition={{ type: "spring", stiffness: 600, damping: 30 }}
-        className={`w-7 h-7 rounded-full flex items-center justify-center text-white shadow-md ${
-          darkMode
-            ? "bg-gray-900 text-yellow-400 ml-auto"
-            : "bg-yellow-400 text-gray-900"
-        }`}
+        className={`w-7 h-7 rounded-full flex items-center justify-center 
+          shadow-md text-lg
+          ${
+            darkMode
+              ? "ml-auto bg-gradient-to-br from-gray-900 to-gray-700 text-yellow-300"
+              : "bg-gradient-to-br from-yellow-400 to-yellow-300 text-gray-800"
+          }`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {darkMode ? (
             <motion.div
               key="moon"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
+              initial={{ rotate: 180, scale: 0.5, opacity: 0 }}
+              animate={{ rotate: 0, scale: 1, opacity: 1 }}
+              exit={{ rotate: -180, scale: 0.5, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
               <FaMoon />
@@ -32,9 +41,9 @@ const ThemeToggle = ({ darkMode, setDarkMode }) => {
           ) : (
             <motion.div
               key="sun"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
+              initial={{ rotate: -180, scale: 0.5, opacity: 0 }}
+              animate={{ rotate: 0, scale: 1, opacity: 1 }}
+              exit={{ rotate: 180, scale: 0.5, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
               <FaSun />

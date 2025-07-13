@@ -49,54 +49,54 @@ const ProfileDropdown = ({ user }) => {
   return (
     user && (
       <div ref={dropdownRef} className="relative z-50">
-        {/* Avatar Button */}
+        {/* Avatar */}
         <div
           onClick={() => setOpen(!open)}
-          className="w-10 h-10 cursor-pointer border-2 border-white dark:border-emerald-500 rounded-full overflow-hidden shadow-md hover:scale-105 transition-transform duration-200 bg-gradient-to-br from-emerald-400 to-cyan-600"
+          className="w-11 h-11 cursor-pointer rounded-full border-2 border-white dark:border-emerald-400 bg-gradient-to-tr from-emerald-400 to-cyan-500 hover:scale-105 transition-all shadow-lg overflow-hidden"
           title={user.displayName || "User Profile"}
         >
           {user.photoURL ? (
             <img
-              className="h-full w-full object-cover"
               src={user.photoURL}
               alt="User"
+              className="w-full h-full object-cover rounded-full"
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white">
-              <FaUser className="text-lg" />
+            <div className="w-full h-full flex items-center justify-center text-white text-xl">
+              <FaUser />
             </div>
           )}
         </div>
 
         {/* Dropdown Panel */}
         <div
-          className={`absolute right-0 mt-4 w-64 bg-white/80 dark:bg-[#111827]/90 backdrop-blur-md rounded-2xl shadow-xl border border-emerald-200 dark:border-emerald-800 transform transition-all duration-300 ease-in-out ${
+          className={`absolute right-0 mt-3 w-72 backdrop-blur-xl bg-white/80 dark:bg-[#111827]/90 border border-gray-200/30 dark:border-gray-700/60 rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 ${
             open
               ? "opacity-100 visible translate-y-0"
-              : "opacity-0 invisible -translate-y-3"
+              : "opacity-0 invisible -translate-y-2"
           }`}
         >
           {/* User Info */}
-          <div className="px-5 py-4 border-b border-emerald-100 dark:border-emerald-700">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate select-none">
+          <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
               {user.displayName || "Traveler"}
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400 truncate select-none">
+            <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
               {user.email || "No email found"}
             </p>
           </div>
 
           {/* Nav Links */}
-          <nav className="px-4 py-4 space-y-2">
+          <nav className="px-4 py-3 space-y-2">
             <NavLink
               to="/dashboard"
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 text-sm font-semibold rounded-xl transition-all ${
+                `flex items-center gap-3 px-4 py-2 text-sm rounded-xl transition-all ${
                   isActive
-                    ? "bg-emerald-500 text-white shadow"
-                    : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-800 hover:text-emerald-900 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md"
+                    : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-800"
                 }`
               }
             >
@@ -108,10 +108,10 @@ const ProfileDropdown = ({ user }) => {
               to="/offer-announcements"
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 text-sm font-semibold rounded-xl transition-all ${
+                `flex items-center gap-3 px-4 py-2 text-sm rounded-xl transition-all ${
                   isActive
-                    ? "bg-emerald-500 text-white shadow"
-                    : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-800 hover:text-emerald-900 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md"
+                    : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-800"
                 }`
               }
             >
@@ -123,7 +123,7 @@ const ProfileDropdown = ({ user }) => {
           {/* Logout */}
           <button
             onClick={handleLogout}
-            className="w-full px-5 py-3 text-left text-sm font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-b-xl transition-colors duration-200"
+            className="w-full text-left px-5 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900 transition-colors"
           >
             <FaSignOutAlt className="inline mr-2" />
             Logout

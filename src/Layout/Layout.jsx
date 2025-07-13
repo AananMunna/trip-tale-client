@@ -18,7 +18,7 @@ const Layout = () => {
       <ScrollToTop />
       <Navbar isAssignmentsPage={isAssignmentsPage}></Navbar>
       {isLoading && <LoadingSpinner />}
-      <div className={isAssignmentsPage ? "py-0" : "py-10"}>
+      <div className={isAssignmentsPage ? "py-0" : "py-0"}>
         <Outlet></Outlet>
       </div>
       <Footer></Footer>
