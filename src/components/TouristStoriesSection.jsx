@@ -2,91 +2,110 @@
 import React from "react";
 import { FacebookShareButton, FacebookIcon } from "react-share";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthProvider";
+import { motion } from "framer-motion";
 
 const TouristStoriesSection = () => {
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const { user } = useContext(AuthContext);
 
-  const isLoggedIn = true; // Replace with actual auth logic
+  const { data: stories = [], isLoading, isError } = useQuery({
+    queryKey: ["randomStories"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/stories?limit=4&random=true");
+      return res.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const stories = [
-    {
-      id: 1,
-      title: "Mystic Sundarbans Adventure",
-      description: "Exploring the lush mangroves and spotting Royal Bengal Tigers was a thrilling experience!",
-      image: "https://source.unsplash.com/featured/?sundarbans",
-      url: "https://example.com/story/1",
-    },
-    {
-      id: 2,
-      title: "Tea Garden Tranquility",
-      description: "The peace and green of Sylhet’s tea gardens were like therapy to my soul.",
-      image: "https://source.unsplash.com/featured/?sylhet",
-      url: "https://example.com/story/2",
-    },
-    {
-      id: 3,
-      title: "Dhaka City Wonders",
-      description: "From the Lalbagh Fort to the bustling New Market, Dhaka is vibrant and alive!",
-      image: "https://source.unsplash.com/featured/?dhaka",
-      url: "https://example.com/story/3",
-    },
-    {
-      id: 4,
-      title: "Hill Tracks of Bandarban",
-      description: "Hiking through Nilgiri hills and meeting the tribal communities was unforgettable.",
-      image: "https://source.unsplash.com/featured/?bandarban",
-      url: "https://example.com/story/4",
-    },
-  ];
+  if (isLoading) {
+    return (
+      <div className="min-h-[300px] flex justify-center items-center">
+        <span className="loading loading-spinner loading-lg text-indigo-600"></span>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-[300px] flex justify-center items-center text-red-500">
+        Failed to load stories. Please try again later.
+      </div>
+    );
+  }
 
   return (
-    <section className="px-4 py-16 max-w-7xl mx-auto bg-white dark:bg-gray-900 text-gray-800 dark:text-white transition-colors duration-300 rounded-xl shadow-md">
-      <h2 className="text-4xl font-extrabold text-center mb-12 tracking-tight">
+    <section className="px-6 py-16 max-w-7xl mx-auto bg-white dark:bg-gray-900 rounded-xl  transition-colors duration-300">
+      <h2 className="text-4xl font-extrabold text-center mb-2 tracking-tight text-gray-900 dark:text-white">
         📝 Tourist Stories
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <p className="text-center mb-12 max-w-xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
+        Real experiences shared by travelers. Get inspired and share your own journey!
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {stories.map((story) => (
-          <div
-            key={story.id}
-            className="bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow hover:shadow-lg transition-shadow duration-300"
+          <motion.div
+            key={story._id}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md overflow-hidden flex flex-col"
           >
-            <img
-              src={story.image}
-              alt={story.title}
-              className="h-56 w-full object-cover"
-            />
-            <div className="p-6 space-y-3">
-              <h3 className="text-2xl font-bold">{story.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {story.description}
+            <div className="h-44 overflow-hidden rounded-t-xl">
+              {/* Show first image of images array or fallback image */}
+              <img
+                src={
+                  story.images && story.images.length > 0
+                    ? story.images[0]
+                    : `https://source.unsplash.com/featured/?travel,${encodeURIComponent(story.title)}`
+                }
+                alt={story.title}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="p-5 flex flex-col flex-grow">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white line-clamp-2">
+                {story.title}
+              </h3>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 flex-grow line-clamp-3">
+                {story.text}
               </p>
-              <div className="mt-4 flex justify-between items-center">
-                {isLoggedIn ? (
+
+              <div className="mt-4 flex items-center justify-between">
+                {user ? (
                   <FacebookShareButton
-                    url={story.url}
+                    url={window.location.origin + `/stories/${story._id}`}
                     quote={story.title}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition cursor-pointer"
                   >
                     <FacebookIcon size={32} round />
-                    <span className="text-sm font-medium">Share</span>
+                    <span className="font-semibold text-sm select-none">Share</span>
                   </FacebookShareButton>
                 ) : (
                   <button
                     onClick={() => navigate("/login")}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm font-medium"
                   >
                     Login to Share
                   </button>
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-      <div className="mt-10 text-center">
+
+      <div className="mt-14 text-center">
         <button
-          onClick={() => navigate("/stories")}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
+          onClick={() => navigate("/community")}
+          className="bg-emerald-500 text-white px-8 py-3 rounded-lg hover:bg-emerald-700 transition font-semibold shadow-md"
         >
           View All Stories
         </button>

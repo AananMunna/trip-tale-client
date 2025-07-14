@@ -42,13 +42,13 @@ export default function HeroSection() {
           </span>
 
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight drop-shadow-md">
-            <span className="bg-gradient-to-r from-teal-300 to-blue-400 bg-clip-text text-transparent">
+            <span className="">
               Explore,
             </span>{" "}
             <span className="underline decoration-2 underline-offset-4 decoration-emerald-400">
               Experience,
             </span>{" "}
-            <span className="text-pink-300">Enjoy.</span>
+            <span className="">Enjoy.</span>
           </h1>
 
           <p className="max-w-xl mx-auto text-base md:text-lg text-gray-200">
@@ -58,15 +58,15 @@ export default function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
             <Link
               to="/all-trips"
-              className="px-6 py-3 bg-gradient-to-r from-teal-500 to-blue-500 rounded-full text-white font-semibold shadow-lg hover:scale-105 transition"
+              className="px-6 py-3 bg-emerald-500 rounded-full text-white font-semibold shadow-lg hover:scale-105 transition"
             >
               Browse Trips
             </Link>
             <Link
-              to="/guides"
+              to="/community"
               className="px-6 py-3 border-2 border-white rounded-full text-white hover:bg-white/10 transition"
             >
-              Meet Our Guides
+              Community
             </Link>
           </div>
         </div>

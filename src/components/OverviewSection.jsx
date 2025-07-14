@@ -38,10 +38,10 @@ export default function OverviewSection() {
         className="relative z-10 max-w-6xl mx-auto text-center space-y-10"
       >
         <div className="space-y-4">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white">
+          <h2 className="text-4xl font-extrabold text-center mb-2 tracking-tight text-gray-900 dark:text-white">
             Explore Sylhet & More with TripTale 🌍
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-center mb-12 max-w-xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
             Dive into Bangladesh’s natural beauty—from tea terraces to serene hills.
             Let TripTale guide your journey, one story at a time.
           </p>

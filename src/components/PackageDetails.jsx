@@ -6,6 +6,7 @@ import BookNowModal from "../components/BookNowModal";
 import { useContext, useState } from "react";
 import PremiumGallery from "./PremiumGallery";
 import { AuthContext } from "../context/AuthProvider";
+import { motion } from 'framer-motion';
 
 const PackageDetails = () => {
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
@@ -18,7 +19,7 @@ const PackageDetails = () => {
     queryKey: ["packageDetails", id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/packages/${id}`);
-      return res.data;
+      return res?.data;
     },
   });
 
@@ -48,59 +49,82 @@ const PackageDetails = () => {
   };
 
   return (
-    <section className="max-w-6xl py-40 mx-auto px-4 pb-28 text-gray-800 dark:text-gray-100 transition-all relative">
-
+       <section className="max-w-6xl py-40 mx-auto px-4 pb-28 text-gray-800 dark:text-gray-100 transition-all relative">
       {/* 🎞️ Premium Gallery */}
       <PremiumGallery images={images} />
 
       {/* 🌍 Title */}
-      <h1 className="text-4xl font-bold text-center mb-8 text-indigo-700 dark:text-yellow-400">
+      <h1 className="text-4xl font-extrabold text-center mb-2 tracking-tight text-gray-900 dark:text-white">
         {title}
       </h1>
+
       {/* 📃 Overview */}
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-md p-6 mb-10 mt-10">
-        <h2 className="text-2xl font-semibold mb-3">Overview</h2>
-        <p className="leading-relaxed text-gray-700 dark:text-gray-300">
+      <div className="bg-gray-50 dark:bg-gray-800/80 rounded-xl shadow-xl backdrop-blur-sm p-8 mb-12 mt-10">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Overview</h2>
+        <p className="leading-relaxed text-gray-700 dark:text-gray-300 text-lg">
           {description}
         </p>
       </div>
 
       {/* 📌 Details */}
-      <div className="grid md:grid-cols-2 gap-6 items-start">
-        <div className="space-y-5">
+      <div className="grid md:grid-cols-2 gap-8 items-start">
+        <div className="space-y-6 text-gray-700 dark:text-gray-300 text-lg">
           <div className="flex items-center gap-3">
-            <FaMapMarkedAlt className="text-xl text-blue-600 dark:text-yellow-400" />
+            <FaMapMarkedAlt className="text-2xl text-blue-600 dark:text-yellow-400" />
             <p>
               <strong>Tour Type:</strong> {tourType}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <FaClock className="text-xl text-pink-500" />
+            <FaClock className="text-2xl text-pink-500" />
             <p>
               <strong>Duration:</strong> {duration}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <FaMoneyBillWave className="text-xl text-green-500" />
+            <FaMoneyBillWave className="text-2xl text-green-500" />
             <p>
               <strong>Price:</strong>{" "}
-              <span className="text-lg font-semibold">৳{price}</span>
+              <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                ৳{price}
+              </span>
             </p>
           </div>
         </div>
       </div>
 
-      {/* 📌 Sticky Book Now Button */}
-      <div className="fixed bottom-5 right-5 z-50">
-        <button
+      {/* 📦 Sticky Premium Book Now Button */}
+      <motion.div
+        initial={{ scale: 1 }}
+        animate={{
+          scale: [1, 1.05, 1],
+          boxShadow: [
+            // "0px 0px 0px rgba(0,0,0,0)",
+            "rgba(16,185,129,0.6)",
+            // "0px 0px 0px rgba(0,0,0,0)",
+          ],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="fixed bottom-5 right-5 z-50"
+      >
+        <motion.button
+          whileHover={{
+            scale: 1.1,
+            backgroundColor: "#059669",
+            transition: { duration: 0.3 },
+          }}
           onClick={handleBookNow}
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 shadow-xl transition-all duration-300 text-white font-semibold rounded-full text-sm sm:text-base"
+          className="px-6 py-3 bg-emerald-600 shadow-2xl text-white font-semibold rounded-full text-sm sm:text-base"
         >
           Book Now
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       {/* 📦 Modal */}
       <BookNowModal

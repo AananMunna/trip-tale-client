@@ -1,33 +1,54 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+const tips = [
+  "Use refillable water bottles instead of plastic.",
+  "Respect wildlife and never feed or disturb them.",
+  "Stay in eco-certified accommodations.",
+  "Support local businesses and artisans.",
+  "Minimize waste, recycle where possible.",
+  "Walk or cycle to explore nearby places.",
+];
 
 const EcoFriendlyTips = () => {
-  const tips = [
-    "Use refillable water bottles instead of plastic.",
-    "Respect wildlife and never feed or disturb them.",
-    "Stay in eco-certified accommodations.",
-    "Support local businesses and artisans.",
-    "Minimize waste, recycle where possible.",
-    "Walk or cycle to explore nearby places.",
-  ];
-
   return (
-    <section className="px-6 py-20 max-w-7xl mx-auto bg-green-50 dark:bg-green-950 text-gray-900 dark:text-green-200 transition-colors duration-500 rounded-3xl shadow-lg">
-      <h2 className="text-4xl font-extrabold text-center mb-14 tracking-tight text-green-800 dark:text-green-300">
-        🌱 Eco-Friendly Travel Tips
-      </h2>
-      <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="max-w-7xl mx-auto px-6 py-20 bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-500">
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="text-center text-4xl font-extrabold mb-14 tracking-tight text-gray-900 dark:text-white"
+      >
+        🌿 Eco-Friendly Travel Tips
+      </motion.h2>
+
+      <motion.ul
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.1 } },
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
         {tips.map((tip, idx) => (
-          <li
+          <motion.li
             key={idx}
-            className="flex items-start gap-4 bg-white dark:bg-green-900 border border-green-200 dark:border-green-700 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300"
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className="flex items-start gap-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300"
           >
-            <span className="inline-block text-3xl leading-none select-none text-green-600 dark:text-green-400">
+            <span className="flex-shrink-0 mt-1 text-3xl text-green-500 dark:text-green-400 select-none">
               ✅
             </span>
-            <p className="text-base leading-relaxed font-medium">{tip}</p>
-          </li>
+            <p className="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+              {tip}
+            </p>
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
     </section>
   );
 };

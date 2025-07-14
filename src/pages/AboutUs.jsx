@@ -34,7 +34,7 @@ const AboutUs = () => {
   };
 
   return (
-    <section className="max-w-4xl mx-auto p-6 mt-10 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+    <section className="max-w-4xl mx-auto p-6 py-30 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
       <h1 className="text-4xl font-bold mb-6 text-center text-gray-900 dark:text-white">
         About Me
       </h1>

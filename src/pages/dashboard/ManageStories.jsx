@@ -96,12 +96,15 @@ const uploadToCloudinary = async (img) => {
         (img) => !editImages.includes(img)
       );
 
-      const res = await axiosSecure.put(`/stories/${editStory._id}`, {
-        title: editTitle,
-        text: editText,
-        removedImages,
-        newImageURLs,
-      });
+     const res = await axiosSecure.put(`/stories/${editStory._id}`, {
+  title: editTitle,
+  text: editText,
+  removedImages,
+  newImageURLs,
+  userName: user?.displayName,
+  userPhoto: user?.photoURL,
+});
+
 
       if (res.data.modifiedCount > 0) {
         Swal.fire("Updated!", "Your story has been updated.", "success");

@@ -1,34 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Link } from "react-router";
-import { Trash2, CreditCard } from "lucide-react";
+import { Link } from "react-router"; // fixed import
+import { CreditCard, Trash2 } from "lucide-react";
 import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { AuthContext } from "../../context/AuthProvider";
-import useWindowSize from "react-use/lib/useWindowSize"; // ✅ useWindowSize for full screen confetti
 
 const MyBookings = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
-  const { width, height } = useWindowSize(); // ✅ Get screen size
-  const [showConfetti, setShowConfetti] = useState(false); // ✅ Confetti state
+  const { width, height } = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const { data: bookings = [], refetch, isLoading } = useQuery({
+  // Query: fetch and sort bookings by latest date
+  const {
+    data: bookings = [],
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["userBookings", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/bookings?email=${user?.email}`);
-      return res.data;
+      const sorted = res.data.sort(
+        (a, b) => new Date(b.tourDate) - new Date(a.tourDate)
+      );
+      return sorted;
     },
+    enabled: !!user?.email,
   });
 
-  // ✅ Show confetti if bookings > 3
+  // 🎉 Confetti for milestone booking
   useEffect(() => {
     if (bookings.length > 3) {
       setShowConfetti(true);
-      setTimeout(() => {
-        setShowConfetti(false); // hide after 5 seconds
-      }, 5000);
+      const timer = setTimeout(() => setShowConfetti(false), 4000);
+      return () => clearTimeout(timer);
     }
   }, [bookings]);
 
@@ -52,38 +60,60 @@ const MyBookings = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      {/* 🎉 Confetti will show when more than 3 bookings */}
+    <div className="max-w-6xl mx-auto px-4 py-10">
       {showConfetti && <Confetti width={width} height={height} />}
 
-      <h2 className="text-2xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">
-        My Bookings
+      <h2 className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 text-center mb-8">
+        🧳 My Bookings
       </h2>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <div className="min-h-[300px] flex items-center justify-center">
+          <span className="loading loading-spinner text-emerald-600 w-8 h-8" />
+        </div>
       ) : bookings.length === 0 ? (
-        <p>No bookings found.</p>
+        <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
+          <p>No bookings found.</p>
+          <Link
+            to="/packages"
+            className="mt-4 inline-block text-emerald-600 hover:text-emerald-800 font-semibold underline"
+          >
+            Book your first trip now →
+          </Link>
+        </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {bookings.map((booking) => (
             <div
               key={booking._id}
-              className="border dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col md:flex-row justify-between items-start md:items-center"
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-lg transition p-6 flex flex-col justify-between"
             >
-              <div className="flex flex-col gap-1 text-sm text-gray-800 dark:text-gray-100">
-                <p><strong>Title:</strong> {booking.packageTitle}</p>
-                <p><strong>Date:</strong> {new Date(booking.tourDate).toLocaleDateString()}</p>
-                <p><strong>Price:</strong> ৳{booking.price}</p>
-                <p><strong>Guide:</strong> {booking.tourGuide}</p>
-                <p>
-                  <strong>Status:</strong>{" "}
+              <div className="space-y-2 mb-4">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  ✈️ {booking.packageTitle}
+                </h3>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  📅 Tour Date:{" "}
+                  <span className="font-medium">
+                    {new Date(booking.tourDate).toLocaleDateString()}
+                  </span>
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  💰 Price: ৳{booking.price}
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  👤 Guide: {booking.tourGuide}
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold text-gray-700 dark:text-gray-400">
+                    Status:
+                  </span>{" "}
                   <span
-                    className={`px-2 py-1 rounded text-white text-xs ${
+                    className={`inline-block px-3 py-1 text-xs font-semibold rounded-full text-white ${
                       booking.status === "pending"
                         ? "bg-yellow-500"
                         : booking.status === "confirmed"
-                        ? "bg-green-500"
+                        ? "bg-green-600"
                         : "bg-gray-500"
                     }`}
                   >
@@ -92,27 +122,25 @@ const MyBookings = () => {
                 </p>
               </div>
 
-              <div className="flex gap-3 mt-4 md:mt-0">
-                {/* Pay Button */}
+              <div className="flex gap-3 mt-auto">
                 {booking.status === "pending" && (
-                  <Link
-                    to={`/dashboard/payment/${booking._id}`}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded inline-flex items-center gap-1 text-sm"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    Pay Now
-                  </Link>
-                )}
+                  <>
+                    <Link
+                      to={`/dashboard/payment/${booking._id}`}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm py-2 px-4 rounded-lg inline-flex items-center justify-center gap-2"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      Pay Now
+                    </Link>
 
-                {/* Cancel Button */}
-                {booking.status === "pending" && (
-                  <button
-                    onClick={() => handleCancel(booking._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded inline-flex items-center gap-1 text-sm"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Cancel
-                  </button>
+                    <button
+                      onClick={() => handleCancel(booking._id)}
+                      className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-4 rounded-lg inline-flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Cancel
+                    </button>
+                  </>
                 )}
               </div>
             </div>

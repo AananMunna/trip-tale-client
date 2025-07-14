@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-tr from-indigo-900 via-purple-900 to-pink-900 text-gray-200 dark:text-gray-300">
+    <footer className="relative bg-gradient-to-tr from-indigo-900 via-teal-700 to-emerald-900 text-gray-200 dark:text-gray-300">
       {/* Top Wave SVG */}
       <div className="absolute top-0 left-0 right-0 overflow-hidden leading-[0]">
         <svg
@@ -17,7 +17,7 @@ export default function Footer() {
           <path
             fill="currentColor"
             d="M0 54L1440 0H0v54z"
-            className="text-indigo-900 dark:text-indigo-700"
+            className="text-teal-600 dark:text-teal-700"
           />
         </svg>
       </div>
@@ -40,7 +40,7 @@ export default function Footer() {
 
         {/* Social Links with labels */}
         <nav className="flex flex-col space-y-6 md:space-y-8 text-center md:text-left">
-          <h3 className="text-xl font-semibold tracking-wide text-pink-400">Connect with us</h3>
+          <h3 className="text-xl font-semibold tracking-wide text-white">Connect with us</h3>
           <div className="flex justify-center md:justify-start gap-6 text-3xl text-indigo-300">
             <a
               href="https://github.com/aananmunna"

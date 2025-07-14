@@ -28,53 +28,51 @@ export default function TourismAndGuideTabs() {
 
   return (
     <section className="px-4 py-16 max-w-7xl mx-auto text-gray-800 dark:text-white transition-colors duration-300 rounded-xl">
-      <h2 className="text-4xl font-extrabold text-center mb-2 tracking-tight">
+      <h2 className="text-4xl font-extrabold text-center mb-2 tracking-tight text-gray-900 dark:text-white">
         🌍 Tourism & Travel Guide
       </h2>
-      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-10">
+      <p className="text-center mb-12 max-w-xl mx-auto text-gray-600 dark:text-gray-400 text-lg">
         From adventure-packed getaways to expert local guidance — explore curated travel packages and connect with experienced guides.
       </p>
 
-      <Tabs selectedTabClassName="text-blue-600 font-semibold border-b-2 border-blue-500">
+      <Tabs selectedTabClassName="text-emerald-500 font-semibold border-b-2 border-blue-500">
         <TabList className="flex justify-center gap-10 mb-10 text-lg">
-          <Tab className="px-4 py-2 cursor-pointer border-b-2 border-transparent hover:border-blue-400 focus:outline-none focus:border-blue-600 transition-colors duration-300">
+          <Tab className="px-4 py-2 cursor-pointer border-b-2 border-transparent hover:border-emerald-500 focus:outline-none focus:border-emerald-500 transition-colors duration-300">
             Our Packages
           </Tab>
-          <Tab className="px-4 py-2 cursor-pointer border-b-2 border-transparent hover:border-blue-400 focus:outline-none focus:border-blue-600 transition-colors duration-300">
+          <Tab className="px-4 py-2 cursor-pointer border-b-2 border-transparent hover:border-emerald-500 focus:outline-none focus:border-emerald-500 transition-colors duration-300">
             Meet Our Tour Guides
           </Tab>
         </TabList>
 
         {/* 📦 Package Panel */}
         <TabPanel>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {packages.map((pkg) => (
               <motion.div
                 key={pkg._id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
-                className="relative bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden group hover:shadow-2xl transition duration-300"
+                className="relative rounded-3xl overflow-hidden shadow-xl group hover:shadow-2xl transform transition duration-300 bg-gray-100 dark:bg-black border border-gray-200 dark:border-white/10"
               >
+                <Link to={`/packages/${pkg._id}`}>                
                 <img
                   src={pkg.images}
                   alt={pkg.title}
-                  className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="h-64 w-full object-cover group-hover:scale-105 transition-transform duration-300 brightness-95"
                 />
-                <div className="p-5 space-y-2">
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                    {pkg.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {pkg.tourType}
-                  </p>
-                  <p className="text-blue-600 dark:text-blue-400 font-semibold">
-                    ${pkg.price}
-                  </p>
+                </Link>
+                <div className="absolute inset-0 bg-black/40 dark:bg-black/50 group-hover:bg-black/60 transition-all duration-300 z-0" />
+
+                <div className="relative z-10 p-6 text-white space-y-2">
+                  <h3 className="text-2xl font-bold drop-shadow-md">{pkg.title}</h3>
+                  <p className="text-sm text-gray-100/90">{pkg.tourType}</p>
+                  <p className="text-emerald-300 font-semibold text-lg">৳{pkg.price}</p>
                   <Link
                     to={`/packages/${pkg._id}`}
-                    className="inline-block bg-gradient-to-r from-blue-600 to-teal-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:scale-105 transition-transform duration-200"
+                    className="inline-block mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all"
                   >
                     View Package
                   </Link>
