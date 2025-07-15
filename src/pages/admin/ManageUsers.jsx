@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import Select from "react-select";
@@ -11,6 +11,8 @@ const ManageUsers = () => {
 
   const [roleFilter, setRoleFilter] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
 
   const roles = [
     { value: "tourist", label: "Tourist" },
@@ -25,19 +27,22 @@ const ManageUsers = () => {
   };
 
   const {
-    data: users = [],
+    data = { users: [], total: 0 },
     isLoading,
     isError,
     refetch,
   } = useQuery({
-    queryKey: ["allUsers", roleFilter, searchText],
+    queryKey: ["allUsers", roleFilter, searchText, currentPage],
     queryFn: async () => {
       const query = new URLSearchParams();
       if (roleFilter) query.append("role", roleFilter.value);
       if (searchText) query.append("search", searchText);
+      query.append("page", currentPage);
+      query.append("limit", usersPerPage);
       const res = await axiosSecure.get(`/admin/users?${query.toString()}`);
       return res.data;
     },
+    keepPreviousData: true,
   });
 
   const updateRoleMutation = useMutation({
@@ -55,6 +60,11 @@ const ManageUsers = () => {
   const handleRoleChange = (id, role) => {
     updateRoleMutation.mutate({ id, newRole: role });
   };
+
+  // Reset to page 1 on filter or search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [roleFilter, searchText]);
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
@@ -88,7 +98,7 @@ const ManageUsers = () => {
         <p className="text-center text-gray-500 dark:text-gray-400">Loading users...</p>
       ) : isError ? (
         <p className="text-center text-red-500">Failed to load users.</p>
-      ) : users.length === 0 ? (
+      ) : data.users.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400">No users found.</p>
       ) : (
         <>
@@ -104,7 +114,7 @@ const ManageUsers = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
+                {data.users.map((u) => (
                   <tr
                     key={u._id}
                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -112,7 +122,7 @@ const ManageUsers = () => {
                     <td className="py-3 px-6 flex items-center gap-3">
                       <img
                         src={u.photo || "/default-avatar.png"}
-                        alt={`${u.name}'s avatar`}
+                        alt={u.name}
                         className="w-10 h-10 rounded-full object-cover border-2 border-emerald-600"
                       />
                       <span>{u.name}</span>
@@ -126,8 +136,7 @@ const ManageUsers = () => {
                           <button
                             key={r.value}
                             onClick={() => handleRoleChange(u._id, r.value)}
-                            className={`px-3 py-1 rounded text-white text-sm transition-colors duration-200 ${roleColors[r.value]}`}
-                            aria-label={`Make ${r.label}`}
+                            className={`px-3 py-1 rounded text-white text-sm ${roleColors[r.value]}`}
                           >
                             Make {r.label}
                           </button>
@@ -139,9 +148,9 @@ const ManageUsers = () => {
             </table>
           </div>
 
-          {/* Mobile card view */}
+          {/* Mobile view */}
           <div className="md:hidden flex flex-col gap-6">
-            {users.map((u) => (
+            {data.users.map((u) => (
               <div
                 key={u._id}
                 className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md"
@@ -149,7 +158,7 @@ const ManageUsers = () => {
                 <div className="flex items-center gap-4 mb-3">
                   <img
                     src={u.photo || "/default-avatar.png"}
-                    alt={`${u.name}'s avatar`}
+                    alt={u.name}
                     className="w-14 h-14 rounded-full object-cover border-2 border-emerald-600"
                   />
                   <div className="flex-1">
@@ -167,8 +176,7 @@ const ManageUsers = () => {
                       <button
                         key={r.value}
                         onClick={() => handleRoleChange(u._id, r.value)}
-                        className={`flex-1 min-w-[40%] px-3 py-2 rounded text-white text-sm transition-colors duration-200 ${roleColors[r.value]}`}
-                        aria-label={`Make ${r.label}`}
+                        className={`flex-1 min-w-[40%] px-3 py-2 rounded text-white text-sm ${roleColors[r.value]}`}
                       >
                         Make {r.label}
                       </button>
@@ -177,6 +185,52 @@ const ManageUsers = () => {
               </div>
             ))}
           </div>
+
+          {/* Pagination Controls */}
+<div className="mt-8 flex flex-wrap justify-center items-center gap-2">
+  <button
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    disabled={currentPage === 1}
+    className={`px-4 py-2 rounded-md font-semibold ${
+      currentPage === 1
+        ? "bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
+        : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
+    }`}
+  >
+    Prev
+  </button>
+
+  {Array.from({ length: Math.ceil(data.total / usersPerPage) }, (_, i) => (
+    <button
+      key={i}
+      onClick={() => setCurrentPage(i + 1)}
+      className={`px-4 py-2 rounded-md font-semibold ${
+        currentPage === i + 1
+          ? "bg-emerald-600 text-white"
+          : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
+      }`}
+    >
+      {i + 1}
+    </button>
+  ))}
+
+  <button
+    onClick={() =>
+      setCurrentPage((prev) =>
+        prev < Math.ceil(data.total / usersPerPage) ? prev + 1 : prev
+      )
+    }
+    disabled={currentPage === Math.ceil(data.total / usersPerPage)}
+    className={`px-4 py-2 rounded-md font-semibold ${
+      currentPage === Math.ceil(data.total / usersPerPage)
+        ? "bg-gray-300 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed"
+        : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
+    }`}
+  >
+    Next
+  </button>
+</div>
+
         </>
       )}
     </div>
