@@ -21,7 +21,7 @@ const Login = () => {
           saveUserToDB(result.user);
 
         Swal.fire("Welcome!", "You’re logged in.", "success");
-        navigate("/assignments");
+        navigate("/all-trips");
       })
       .catch((err) => {
         Swal.fire("Login failed", err.message, "error");
@@ -37,7 +37,7 @@ const handleGoogleLogin = async () => {
     await saveUserToDB(user);
 
     Swal.fire("Google Login Success", "", "success");
-    navigate("/assignments");
+    navigate("/all-trips");
   } catch (error) {
     Swal.fire("Google login failed", error.message, "error");
   }

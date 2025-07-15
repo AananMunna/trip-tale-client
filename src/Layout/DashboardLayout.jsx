@@ -13,7 +13,7 @@ import {
   Users2,
   UserPlus2,
 } from "lucide-react";
-import { AuthContext } from "./../context/AuthProvider";
+import { AuthContext } from "../context/AuthProvider";
 import { motion } from "framer-motion";
 
 const DashboardLayout = () => {
@@ -35,11 +35,7 @@ const DashboardLayout = () => {
       icon: <Wallet className="w-5 h-5" />,
       allowedRoles: ["tourist"],
     },
-    {
-      path: "/dashboard/add-story",
-      label: "Add Story",
-      icon: <FilePlus2 className="w-5 h-5" />,
-    },
+    { path: "/dashboard/add-story", label: "Add Story", icon: <FilePlus2 className="w-5 h-5" /> },
     {
       path: "/dashboard/manage-stories",
       label: "Manage Stories",
@@ -78,18 +74,13 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <aside
-        className={`fixed z-40 inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-lg transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:block`}
-      >
-        {/* Header */}
+      <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 bg-white dark:bg-gray-800 shadow-lg z-20">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
           <Link
             to="/"
-            className="flex items-center gap-2 text-2xl font-bold text-teal-700 dark:text-emerald-300 tracking-wide"
+            className="flex items-center gap-2 text-2xl font-bold text-teal-700 dark:text-emerald-300"
           >
             <motion.span
               className="text-3xl"
@@ -100,13 +91,8 @@ const DashboardLayout = () => {
             </motion.span>
             TripTale
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="md:hidden">
-            <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-          </button>
         </div>
-
-        {/* Nav Links */}
-        <nav className="flex flex-col gap-2 mt-6 px-4">
+        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
           {navLinks
             .filter(link => !link.allowedRoles || link.allowedRoles.includes(userRole))
             .map((link, idx) => (
@@ -114,24 +100,61 @@ const DashboardLayout = () => {
                 key={idx}
                 to={link.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all group ${
+                  `flex items-center gap-3 px-4 py-2 rounded-md font-medium transition-all group text-sm ${
                     isActive
                       ? "bg-emerald-600 text-white shadow"
                       : "text-gray-700 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-900"
                   }`
                 }
               >
-                <span className="group-hover:scale-110 transition-transform duration-200">
-                  {link.icon}
-                </span>
+                <span className="group-hover:scale-110 transition-transform duration-200">{link.icon}</span>
                 <span>{link.label}</span>
               </NavLink>
             ))}
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      {/* Mobile Sidebar */}
+      <aside
+        className={`fixed z-30 inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-lg transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out md:hidden`}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-2xl font-bold text-teal-700 dark:text-emerald-300"
+          >
+            🌍 TripTale
+          </Link>
+          <button onClick={() => setSidebarOpen(false)}>
+            <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+          </button>
+        </div>
+        <nav className="flex flex-col gap-2 mt-4 px-4 pb-6">
+          {navLinks
+            .filter(link => !link.allowedRoles || link.allowedRoles.includes(userRole))
+            .map((link, idx) => (
+              <NavLink
+                key={idx}
+                to={link.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded-md font-medium transition-all group text-sm ${
+                    isActive
+                      ? "bg-emerald-600 text-white shadow"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-900"
+                  }`
+                }
+              >
+                <span className="group-hover:scale-110 transition-transform duration-200">{link.icon}</span>
+                <span>{link.label}</span>
+              </NavLink>
+            ))}
+        </nav>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col md:ml-64">
         {/* Topbar for Mobile */}
         <header className="md:hidden flex items-center justify-between px-5 py-3 bg-white dark:bg-gray-800 shadow">
           <button onClick={() => setSidebarOpen(true)}>
@@ -145,8 +168,8 @@ const DashboardLayout = () => {
           />
         </header>
 
-        {/* Dynamic Content */}
-        <main className="p-4 md:p-6 flex-grow bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        {/* Page content with scroll */}
+        <main className="flex-1 overflow-y-auto p-5 bg-gray-50 dark:bg-gray-900">
           <Outlet />
         </main>
       </div>

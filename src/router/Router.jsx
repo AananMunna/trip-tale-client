@@ -28,6 +28,7 @@ import AddPackage from "../pages/dashboard/AddPackage";
 import ManageUsers from "../pages/admin/ManageUsers";
 import ManageTourGuideCandidates from "../pages/admin/ManageTourGuideCandidates";
 import GuideProfile from "../components/GuideProfile";
+import PrivateRoute from './../components/PrivateRoute';
 
 export const router = createBrowserRouter([
   {
@@ -45,71 +46,85 @@ export const router = createBrowserRouter([
       { path: "*", Component: NotFound },
     ],
   },
-  {
-    path: "/dashboard",
-    Component: DashboardLayout,
-    children: [
-      { index: true, Component: UserDashboardHome },
-      {
-        path: "payment/:id",
-        Component: Payment,
-      },
-      { path: "dashboardHome", Component: UserDashboardHome },
-      { path: "add-story", Component: AddStory },
-      { path: "manage-stories", Component: ManageStories },
-      { path: "join-as-tour-guide", element: (
-          <ProtectedRoute allowedRoles={["tourist"]}>
-            <JoinAsTourGuide />
-          </ProtectedRoute>
-        ), },
-      { path: "my-profile", Component: MyProfile },
-      { path: "my-bookings", element: (
-          <ProtectedRoute allowedRoles={["tourist"]}>
-            <MyBookings />
-          </ProtectedRoute>
-        ), },
-      {
-        path: "my-assigned-tours",
-        element: (
-          <ProtectedRoute allowedRoles={["guide"]}>
-            <MyAssignedTours />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "payment-history",
-        element: (
-          <ProtectedRoute allowedRoles={["tourist"]}>
-            <PaymentHistory />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "add-package",
-        element: (
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AddPackage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "manage-users",
-        element: (
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <ManageUsers />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "manage-candidates",
-        element: (
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <ManageTourGuideCandidates />
-          </ProtectedRoute>
-        ),
-      },
-    ],
-  },
+{
+  path: "/dashboard",
+  element: (
+    <PrivateRoute>
+      <DashboardLayout />
+    </PrivateRoute>
+  ),
+  children: [
+    { index: true, element: <UserDashboardHome /> },
+    { path: "dashboardHome", element: <UserDashboardHome /> },
+    { path: "payment/:id", element: <Payment /> },
+    { path: "add-story", element: <AddStory /> },
+    {
+      path: "manage-stories",
+      element: <ManageStories />,
+    },
+    {
+      path: "join-as-tour-guide",
+      element: (
+        <ProtectedRoute allowedRoles={["tourist"]}>
+          <JoinAsTourGuide />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "my-profile",
+      element: <MyProfile />,
+    },
+    {
+      path: "my-bookings",
+      element: (
+        <ProtectedRoute allowedRoles={["tourist"]}>
+          <MyBookings />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "my-assigned-tours",
+      element: (
+        <ProtectedRoute allowedRoles={["guide"]}>
+          <MyAssignedTours />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "payment-history",
+      element: (
+        <ProtectedRoute allowedRoles={["tourist"]}>
+          <PaymentHistory />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "add-package",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AddPackage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "manage-users",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <ManageUsers />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "manage-candidates",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <ManageTourGuideCandidates />
+        </ProtectedRoute>
+      ),
+    },
+  ],
+}
+,
   {
     path: '/unauthorized',
     Component: Unauthorized

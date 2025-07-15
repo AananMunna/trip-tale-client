@@ -112,7 +112,7 @@ const handleRegister = async (e) => {
       color: "white",
     });
 
-    navigate("/assignments");
+    navigate("/all-trips");
   } catch (error) {
     setError(error.message);
     Swal.fire({
@@ -148,7 +148,7 @@ const handleGoogleLogin = async () => {
       color: "white",
     });
 
-    navigate("/assignments");
+    navigate("/all-trips");
   } catch (error) {
     setError(error.message);
     Swal.fire({
