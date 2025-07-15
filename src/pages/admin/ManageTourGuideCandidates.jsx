@@ -64,7 +64,7 @@ const ManageTourGuideCandidates = () => {
   </h2>
 
   {/* Desktop Table */}
-  <div className="hidden lg:block overflow-x-auto rounded shadow">
+  {/* <div className="hidden lg:block overflow-x-auto rounded shadow">
     <table className="min-w-full bg-white dark:bg-gray-800">
       <thead className="bg-emerald-600 text-white">
         <tr>
@@ -86,11 +86,11 @@ const ManageTourGuideCandidates = () => {
             <td className="py-2 px-4">{candidate.email}</td>
             <td className="py-2 px-4">{candidate.title}</td>
             <td className="py-2 px-4 max-w-xs truncate" title={candidate.why}>
-              {candidate.why}
+              {candidate.reason}
             </td>
             <td className="py-2 px-4">
               <a
-                href={candidate.cv}
+                href={candidate.cvLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 underline"
@@ -116,10 +116,10 @@ const ManageTourGuideCandidates = () => {
         ))}
       </tbody>
     </table>
-  </div>
+  </div> */}
 
   {/* Mobile Card View */}
-  <div className="lg:hidden space-y-4">
+  <div className=" space-y-4">
     {candidates.map((candidate) => (
       <div
         key={candidate._id}
@@ -135,11 +135,11 @@ const ManageTourGuideCandidates = () => {
           <span className="font-semibold">Title:</span> {candidate.title}
         </p>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          <span className="font-semibold">Why:</span> {candidate.why}
+          <span className="font-semibold">Why:</span> {candidate.reason}
         </p>
         <p className="mt-2">
           <a
-            href={candidate.cv}
+            href={candidate.cvLink}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 underline"
