@@ -104,20 +104,7 @@ const ProfileDropdown = ({ user }) => {
               Dashboard
             </NavLink>
 
-            <NavLink
-              to="/offer-announcements"
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2 text-sm rounded-xl transition-all ${
-                  isActive
-                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md"
-                    : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-800"
-                }`
-              }
-            >
-              <FaBullhorn className="text-base" />
-              Offer Announcements
-            </NavLink>
+            
           </nav>
 
           {/* Logout */}

@@ -61,15 +61,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 transition-colors duration-700">
+ <div className="min-h-screen py-28 flex items-center justify-center bg-white dark:bg-neutral-900 transition-colors duration-700">
+      {/* Login Box */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="w-[90%] max-w-md bg-white/10 dark:bg-gray-900/70 backdrop-blur-lg rounded-3xl p-8 shadow-xl border border-emerald-400/30 dark:border-cyan-400/40"
+        className="w-[90%] max-w-md bg-white dark:bg-neutral-800 rounded-3xl p-8 shadow-xl border border-neutral-200 dark:border-neutral-700"
       >
-        <h2 className="text-center text-3xl font-extrabold text-white mb-8 tracking-wide drop-shadow-md">
-          🔐 TripTale Login
+        <h2 className="text-center text-3xl font-extrabold text-neutral-800 dark:text-white mb-8 tracking-wide">
+          ✨ Welcome to <span className="text-cyan-600">TripTale</span>
         </h2>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -78,7 +79,7 @@ const Login = () => {
             name="email"
             required
             placeholder="Email address"
-            className="w-full px-5 py-3 rounded-xl bg-white/20 dark:bg-gray-800/30 placeholder-gray-200 dark:placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-cyan-300 transition"
+            className="w-full px-5 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-700 placeholder-gray-500 dark:placeholder-gray-400 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
           />
 
           <div className="relative">
@@ -87,35 +88,37 @@ const Login = () => {
               name="password"
               required
               placeholder="Password"
-              className="w-full px-5 py-3 rounded-xl bg-white/20 dark:bg-gray-800/30 placeholder-gray-200 dark:placeholder-gray-400 text-white focus:outline-none focus:ring-2 focus:ring-cyan-300 transition"
+              className="w-full px-5 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-700 placeholder-gray-500 dark:placeholder-gray-400 text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition"
             />
             <span
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-white opacity-75 hover:opacity-100 transition"
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-600 dark:text-white opacity-75 hover:opacity-100 transition"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             type="submit"
-            className="w-full py-3 bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-cyan-400 hover:to-emerald-400 rounded-xl text-gray-900 font-semibold shadow-lg shadow-cyan-500/40 transition"
+            className="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-xl shadow-md transition"
           >
             Continue
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-cyan-300 text-white rounded-xl hover:bg-cyan-600 transition"
+            className="w-full py-3 border border-neutral-300 dark:border-neutral-600 text-neutral-800 dark:text-white rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-700 transition"
           >
             Sign in with Google
-          </button>
+          </motion.button>
 
-          <p className="text-center text-sm text-white/80 mt-4">
+          <p className="text-center text-sm text-neutral-600 dark:text-neutral-400 mt-4">
             Don’t have an account?{" "}
-            <Link to="/register" className="underline hover:text-cyan-200">
+            <Link to="/register" className="underline hover:text-cyan-600 dark:hover:text-cyan-400">
               Register
             </Link>
           </p>

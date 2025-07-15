@@ -60,22 +60,6 @@ export default function Footer() {
             >
               <FaLinkedin />
             </a>
-            <a
-              href="https://twitter.com/aananmunna"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-              className="hover:text-pink-400 transition"
-            >
-              <FaTwitter />
-            </a>
-            <a
-              href="mailto:aananmunna420@gmail.com"
-              aria-label="Email"
-              className="hover:text-pink-400 transition"
-            >
-              <FaEnvelope />
-            </a>
           </div>
         </nav>
       </div>

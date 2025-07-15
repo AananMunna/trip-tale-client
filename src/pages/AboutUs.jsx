@@ -17,27 +17,24 @@ const AboutUs = () => {
         name: "Gardening Hub",
         description: "A community-driven gardening website with user profiles and plant care guides.",
         github: "https://github.com/AananMunna/gardening-hub",
-        live: "#"
+        live: "https://gardening-hub-a68ec.web.app/"
       },
       {
-        name: "TourTale",
+        name: "TripTale",
         description: "A tourism management platform to connect tourists and tour guides seamlessly.",
-        github: "https://github.com/AananMunna/triptale",
-        live: "#"
+        github: "https://github.com/AananMunna/trip-tale-client",
+        live: "https://trip-tale-3fd61.web.app/"
       }
     ],
     socials: {
       linkedin: "https://linkedin.com/in/aanan-munna-6948b8245",
       github: "https://github.com/AananMunna",
-      twitter: "https://twitter.com/aananmunna",
     },
   };
 
   return (
     <section className="max-w-4xl mx-auto p-6 py-30 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-      <h1 className="text-4xl font-bold mb-6 text-center text-gray-900 dark:text-white">
-        About Me
-      </h1>
+      
 
       <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed text-lg">
         {developer.bio}
@@ -103,15 +100,6 @@ const AboutUs = () => {
             aria-label="GitHub"
           >
             GitHub
-          </a>
-          <a
-            href={developer.socials.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue-500 dark:hover:text-blue-300"
-            aria-label="Twitter"
-          >
-            Twitter
           </a>
         </div>
       </div>

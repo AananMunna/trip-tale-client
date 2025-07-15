@@ -6,6 +6,7 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 import { AuthContext } from "../context/AuthProvider";
 import { Dialog } from "@headlessui/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { motion } from 'framer-motion';
 
 const CommunityPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -62,139 +63,158 @@ const CommunityPage = () => {
     );
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-30 text-gray-800 dark:text-white">
-      <h2 className="text-4xl font-extrabold text-center mb-3 tracking-tight text-gray-900 dark:text-white">
+    <section className="max-w-7xl mx-auto px-4 py-20 text-gray-800 dark:text-white">
+      <h2 className="text-4xl font-extrabold text-center mb-10 tracking-tight text-gray-900 dark:text-white">
          Community Travel Stories
       </h2>
 
       {stories.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400">No stories available.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stories.map((story, idx) => (
-            <div
-              key={story._id}
-              onClick={() => openStory(idx)}
-              className="cursor-pointer bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm p-4 hover:shadow-lg transition duration-200"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  // onClick={(e) => {
-                  //   e.stopPropagation();
-                  //   navigate(`/guide/${story?.guideId}`);
-                  // }}
-                  src={story.userPhoto}
-                  alt={story.userName}
-                  className="w-10 h-10 object-cover rounded-full border cursor-pointer"
-                />
-                <div>
-                  <p className="font-semibold text-gray-800 dark:text-white">{story.userName}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(story.createdAt).toLocaleDateString()}</p>
-                </div>
-              </div>
+        <div className="overflow-hidden">
+  <div className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-2 pb-4">
+    {stories.map((story, idx) => (
+      <motion.div
+        key={story._id}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut", delay: idx * 0.1 }}
+        viewport={{ once: true }}
+        onClick={() => openStory(idx)}
+        className="min-w-[300px] max-w-[320px] snap-start cursor-pointer bg-white dark:bg-neutral-900 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      >
+        <div className="h-48 w-full relative">
+          <img
+            src={story.images?.[0]}
+            alt={story.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent" />
+        </div>
 
-              <h3 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
-                {story.title}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                {story.text.length > 150 ? `${story.text.slice(0, 150)}...` : story.text}
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src={story.userPhoto}
+              alt={story.userName}
+              className="w-9 h-9 object-cover rounded-full border"
+            />
+            <div>
+              <p className="font-medium text-sm text-gray-800 dark:text-white">
+                {story.userName}
               </p>
-              <div className="flex gap-2 overflow-x-auto rounded-md mb-4">
-                {story.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt={`story-${i}`}
-                    className="w-20 h-20 object-cover rounded border border-gray-300 dark:border-gray-600"
-                  />
-                ))}
-              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {new Date(story.createdAt).toLocaleDateString()}
+              </p>
             </div>
+          </div>
+
+          <h3 className="font-semibold text-lg text-gray-800 dark:text-white line-clamp-1">
+            {story.title}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mt-1">
+            {story.text}
+          </p>
+        </div>
+      </motion.div>
+    ))}
+  </div>
+</div>
+      )}
+
+      {activeStoryIndex !== null && (
+        <Dialog open={true} onClose={closeStory} className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
+  <Dialog.Panel className="relative w-full max-w-4xl md:h-[85vh] h-[95vh] mx-auto bg-neutral-900 text-white rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row transition-all duration-500 ease-in-out">
+
+    {/* Left side – image carousel */}
+    <div className="md:w-2/3 w-full h-1/2 md:h-full relative bg-black">
+      <img
+        src={stories[activeStoryIndex]?.images?.[0]}
+        alt="story-img"
+        className="w-full h-full object-cover"
+      />
+      <button
+        onClick={closeStory}
+        className="absolute top-4 right-4 text-white text-3xl font-bold hover:scale-110 transition"
+      >
+        &times;
+      </button>
+    </div>
+
+    {/* Right side – story content */}
+    <div className="md:w-1/3 w-full h-1/2 md:h-full overflow-y-auto p-5 space-y-4 bg-neutral-900">
+      {/* User info */}
+      <div className="flex items-center gap-3">
+        <img
+          src={stories[activeStoryIndex].userPhoto}
+          alt={stories[activeStoryIndex].userName}
+          className="w-10 h-10 rounded-full border object-cover"
+        />
+        <div>
+          <p className="font-semibold">{stories[activeStoryIndex].userName}</p>
+          <p className="text-sm text-gray-400">
+            {new Date(stories[activeStoryIndex].createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
+
+      {/* Title & Text */}
+      <h3 className="text-2xl font-bold">{stories[activeStoryIndex].title}</h3>
+      <p className="text-sm text-gray-300">{stories[activeStoryIndex].text}</p>
+
+      {/* Thumbnails (if more images) */}
+      {stories[activeStoryIndex].images?.length > 1 && (
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          {stories[activeStoryIndex].images.slice(1).map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt={`thumb-${i}`}
+              className="w-full h-28 object-cover rounded-lg"
+            />
           ))}
         </div>
       )}
 
-      {activeStoryIndex !== null && (
-        <Dialog open={true} onClose={closeStory} className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="min-h-screen flex items-center justify-center bg-black/90 p-4">
-            <Dialog.Panel className="relative w-full max-w-4xl mx-auto bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-lg p-6 overflow-hidden">
-              <button
-                onClick={closeStory}
-                className="absolute top-4 right-4 text-white text-3xl font-bold hover:scale-110 transition"
-              >
-                &times;
-              </button>
+      {/* Buttons */}
+      <div className="flex justify-between items-center pt-5">
+        <FacebookShareButton
+          url={window.location.href}
+          quote={stories[activeStoryIndex].title}
+          hashtag="#TravelStory"
+          onClick={handleShareClick}
+          disabled={!user}
+          className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${
+            !user
+              ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          <FacebookIcon size={24} round />
+          Share
+        </FacebookShareButton>
 
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <img
-                    // onClick={() => navigate(`/guide/${stories[activeStoryIndex]?.guideId}`)}
-                    src={stories[activeStoryIndex].userPhoto}
-                    alt={stories[activeStoryIndex].userName}
-                    className="w-12 h-12 object-cover rounded-full border cursor-"
-                  />
-                  <div>
-                    <p className="font-semibold">{stories[activeStoryIndex].userName}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(stories[activeStoryIndex].createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
+        <div className="flex gap-2">
+          <button
+            onClick={prevStory}
+            disabled={activeStoryIndex === 0}
+            className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full disabled:opacity-30"
+          >
+            <FaChevronLeft />
+          </button>
+          <button
+            onClick={nextStory}
+            disabled={activeStoryIndex === stories.length - 1}
+            className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full disabled:opacity-30"
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      </div>
+    </div>
+  </Dialog.Panel>
+</Dialog>
 
-                <h3 className="text-3xl font-bold mb-3">
-                  {stories[activeStoryIndex].title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  {stories[activeStoryIndex].text}
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  {stories[activeStoryIndex].images.map((img, i) => (
-                    <img
-                      key={i}
-                      src={img}
-                      alt={`story-full-${i}`}
-                      className="w-full h-64 object-cover rounded shadow"
-                    />
-                  ))}
-                </div>
-                <div className="flex justify-between items-center mt-6">
-                  <FacebookShareButton
-                    url={window.location.href}
-                    quote={stories[activeStoryIndex].title}
-                    hashtag="#TravelStory"
-                    onClick={handleShareClick}
-                    disabled={!user}
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border ${
-                      !user
-                        ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700 text-white transition"
-                    }`}
-                  >
-                    <FacebookIcon size={28} round />
-                    <span className="text-sm font-medium">Share on Facebook</span>
-                  </FacebookShareButton>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={prevStory}
-                      disabled={activeStoryIndex === 0}
-                      className="text-white bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-full"
-                    >
-                      <FaChevronLeft />
-                    </button>
-                    <button
-                      onClick={nextStory}
-                      disabled={activeStoryIndex === stories.length - 1}
-                      className="text-white bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-full"
-                    >
-                      <FaChevronRight />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Dialog.Panel>
-          </div>
-        </Dialog>
       )}
     </section>
   );

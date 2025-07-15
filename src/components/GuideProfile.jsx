@@ -42,8 +42,9 @@ export default function GuideProfile() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen flex justify-center items-center text-2xl font-semibold text-gray-500 dark:text-gray-300">
-        Loading guide profile...
+      <div className="min-h-screen flex flex-col items-center justify-center text-center gap-3">
+        <span className="loading loading-bars loading-lg text-emerald-500" />
+        <p className="text-gray-500">Fetching your next adventure...</p>
       </div>
     );
   }
