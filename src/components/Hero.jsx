@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import video1 from "../assets/video1.mov"; // your travel video
+// import video1 from "https://res.cloudinary.com/dtiotqi9q/video/upload/v1752563464/banner_cobokk.mp4"; // your travel video
 
 export default function HeroSection() {
   const videoRef = useRef(null);
@@ -20,7 +20,7 @@ export default function HeroSection() {
       <video
         ref={videoRef}
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        src={video1}
+        src="https://res.cloudinary.com/dtiotqi9q/video/upload/v1752563464/banner_cobokk.mp4"
         autoPlay
         muted
         playsInline
