@@ -39,7 +39,7 @@ export default function HiddenGems() {
                 src={place.image}
                 alt={place.name}
                 loading="lazy"
-                className="w-full h-64 object-cover rounded-xl hover:scale-[1.03] hover:brightness-105 transition duration-300 shadow-md"
+                className="w-full mb-3 h-64 object-cover rounded-xl hover:scale-[1.03] hover:brightness-105 transition duration-300 shadow-md"
               />
             </Link>
 

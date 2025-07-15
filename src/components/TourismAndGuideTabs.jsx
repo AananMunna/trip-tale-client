@@ -106,6 +106,7 @@ const { data: guides = [], isPending, isError } = useQuery({
                     alt={guide?.name}
                     className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-blue-300 dark:border-blue-500"
                   />
+                  {console.log(guide._id)}
                   <h3 className="text-lg font-bold mb-2">{guide.name}</h3>
                   <Link
                     to={`/guide/${guide._id}`}

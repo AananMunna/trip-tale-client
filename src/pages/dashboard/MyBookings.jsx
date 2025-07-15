@@ -73,7 +73,7 @@ const MyBookings = () => {
         <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
           <p>No bookings found.</p>
           <Link
-            to="/packages"
+            to="/all-trips"
             className="mt-4 inline-block text-emerald-600 hover:text-emerald-800 font-semibold underline"
           >
             Book your first trip now →

@@ -1,10 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
 
-const axiosSecure = axios.create({
-  baseURL: 'http://localhost:3000',
-  // No auth headers yet because token not setup
-});
+const useAxiosSecure = () => {
+  const axiosSecure = axios.create({
+    baseURL: import.meta.env.VITE_API_URL, // ✅ Load from .env
+  });
 
-export default function useAxiosSecure() {
+  // 🔐 Attach token dynamically before every request
+  axiosSecure.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
   return axiosSecure;
-}
+};
+
+export default useAxiosSecure;

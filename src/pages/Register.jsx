@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { AuthContext } from "../context/AuthProvider";
 import Swal from "sweetalert2";
 import { saveUserToDB } from "../utils/saveUserToDB";
+import axios from "axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const IMGBB_API_KEY = "42a5137615ebf1a1e99a7d7cf8447e7d"; // <-- Replace with your actual imgbb API key
 
@@ -15,7 +17,9 @@ const Register = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadedImageURL, setUploadedImageURL] = useState(null);
 
-  console.log(uploadedImageURL);
+  // console.log(uploadedImageURL);
+    const axiosSecure = useAxiosSecure();
+
 
   const navigate = useNavigate();
   const { register, googleLogin } = useContext(AuthContext);
@@ -87,33 +91,48 @@ const handleRegister = async (e) => {
     return;
   }
 
-  try {
-    const userCredential = await register(email, password);
-    await updateProfile(userCredential.user, {
-      displayName: name,
-      photoURL: uploadedImageURL || undefined,
-    });
+try {
+  const userCredential = await register(email, password);
 
-    // ✅ Save to MongoDB
+  await updateProfile(userCredential.user, {
+    displayName: name,
+    photoURL: uploadedImageURL || undefined,
+  });
+
+  // Save to MongoDB with role
+  const newUser = {
+    email,
+    name,
+    role: "user", // default role or based on user selection
+    photoURL: uploadedImageURL,
+  };
+
+      // ✅ Save to MongoDB
     await saveUserToDB({
       ...userCredential.user,
       displayName: name,
       photoURL: uploadedImageURL,
     });
 
-    Swal.fire({
-      title: "Welcome aboard!",
-      text: `Hello, ${name}! Your account was successfully created.`,
-      icon: "success",
-      timer: 2500,
-      timerProgressBar: true,
-      showConfirmButton: false,
-      background: "rgba(20, 20, 20, 0.95)",
-      color: "white",
-    });
+  // ✅ Now get JWT
+  axiosSecure.post("/jwt", { email: newUser.email, role: newUser.role }).then((res) => {
+    localStorage.setItem("token", res.data.token);
+    // redirect
+  });
 
-    navigate("/all-trips");
-  } catch (error) {
+  Swal.fire({
+    title: "Welcome aboard!",
+    text: `Hello, ${name}! Your account was successfully created.`,
+    icon: "success",
+    timer: 2500,
+    timerProgressBar: true,
+    showConfirmButton: false,
+    background: "rgba(20, 20, 20, 0.95)",
+    color: "white",
+  });
+
+  navigate("/all-trips");
+} catch (error) {
     setError(error.message);
     Swal.fire({
       icon: "error",
@@ -138,6 +157,12 @@ const handleGoogleLogin = async () => {
 
     // ✅ Save to MongoDB
     await saveUserToDB(user);
+
+    axiosSecure.post("/jwt", { email: user.email, role: user.role }).then((res) => {
+  localStorage.setItem("token", res.data.token);
+  // redirect user to dashboard or wherever
+});
+
 
     Swal.fire({
       title: "Google login successful!",

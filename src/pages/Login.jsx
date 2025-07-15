@@ -5,11 +5,14 @@ import Swal from "sweetalert2";
 import { useNavigate, Link } from "react-router";
 import { AuthContext } from "../context/AuthProvider";
 import { saveUserToDB } from "../utils/saveUserToDB";
+import axios from "axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, googleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -18,7 +21,16 @@ const Login = () => {
 
     login(email, password)
       .then((result) => {
-          saveUserToDB(result.user);
+        const user = result.user;
+
+        saveUserToDB(user);
+
+        axiosSecure
+          .post("/jwt", { email: user.email, role: user.role })
+          .then((res) => {
+            localStorage.setItem("token", res.data.token);
+            // redirect user to dashboard or wherever
+          });
 
         Swal.fire("Welcome!", "You’re logged in.", "success");
         navigate("/all-trips");
@@ -28,20 +40,25 @@ const Login = () => {
       });
   };
 
-const handleGoogleLogin = async () => {
-  try {
-    const result = await googleLogin(); // your firebase google login function
-    const user = result.user;
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await googleLogin(); // your firebase google login function
+      const user = result.user;
 
-    // Save or update user in MongoDB
-    await saveUserToDB(user);
+      // Save or update user in MongoDB
+      await saveUserToDB(user);
 
-    Swal.fire("Google Login Success", "", "success");
-    navigate("/all-trips");
-  } catch (error) {
-    Swal.fire("Google login failed", error.message, "error");
-  }
-};
+      axiosSecure.post("/jwt", { email: user.email, role: user.role }).then((res) => {
+        localStorage.setItem("token", res.data.token);
+        // redirect user to dashboard or wherever
+      });
+
+      Swal.fire("Google Login Success", "", "success");
+      navigate("/all-trips");
+    } catch (error) {
+      Swal.fire("Google login failed", error.message, "error");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 transition-colors duration-700">
