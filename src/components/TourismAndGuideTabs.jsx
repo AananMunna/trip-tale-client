@@ -17,14 +17,14 @@ export default function TourismAndGuideTabs() {
     },
   });
 
-  const { data: guides = [], isPending, isError } = useQuery({
-    queryKey: ["guides"],
-    queryFn: async () => {
-      const res = await axiosSecure.get("/users?role=guide");
-      return res.data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+const { data: guides = [], isPending, isError } = useQuery({
+  queryKey: ["randomGuides"],
+  queryFn: async () => {
+    const res = await axiosSecure.get("/guides/random?limit=6");
+    return res.data;
+  },
+});
+
 
   return (
     <section className="px-4 py-16 max-w-7xl mx-auto text-gray-800 dark:text-white transition-colors duration-300 rounded-xl">
