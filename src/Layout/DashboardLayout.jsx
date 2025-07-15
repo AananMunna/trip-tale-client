@@ -12,6 +12,7 @@ import {
   FilePlus2,
   Users2,
   UserPlus2,
+  Package,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthProvider";
 import { motion } from "framer-motion";
@@ -60,11 +61,12 @@ const DashboardLayout = () => {
       allowedRoles: ["admin"],
     },
       {
-    path: "/dashboard/all-packages",
-    label: "All Package",
-    icon: <FilePlus2 className="w-5 h-5" />, // 💥 Icon added here!
-    allowedRoles: ["admin"],
-  },
+  path: "/dashboard/all-packages",
+  label: "All Package",
+  icon: <Package className="w-5 h-5" />, // 📦 Clean & clear for travel packages
+  allowedRoles: ["admin"],
+},
+
     {
       path: "/dashboard/manage-users",
       label: "Manage Users",
