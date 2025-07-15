@@ -4,6 +4,12 @@ import { AuthContext } from "./../../context/AuthProvider";
 import useAxiosSecure from "./../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
+const ROLE_COLORS = {
+  admin: "bg-indigo-600 text-white",
+  guide: "bg-pink-600 text-white",
+  tourist: "bg-emerald-600 text-white",
+};
+
 const MyProfile = () => {
   const { user, userRole } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
@@ -18,17 +24,19 @@ const MyProfile = () => {
   const [name, setName] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  // Get bookings stats
+  // Fetch bookings stats for tourist role
   useEffect(() => {
-    axiosSecure.get(`/bookings?email=${user?.email}`).then((res) => {
-      const total = res.data.length;
-      const confirmed = res.data.filter((b) => b.status === "confirmed").length;
-      const pending = total - confirmed;
-      setBookingStats({ total, confirmed, pending });
-    });
-  }, [user?.email, axiosSecure]);
+    if (userRole === "tourist") {
+      axiosSecure.get(`/bookings?email=${user?.email}`).then((res) => {
+        const total = res.data.length;
+        const confirmed = res.data.filter((b) => b.status === "confirmed").length;
+        const pending = total - confirmed;
+        setBookingStats({ total, confirmed, pending });
+      });
+    }
+  }, [user?.email, axiosSecure, userRole]);
 
-  // Get current user info
+  // Fetch user info on load
   useEffect(() => {
     axiosSecure
       .get(`/users/${user?.email}`)
@@ -37,14 +45,15 @@ const MyProfile = () => {
         setName(res.data?.name || "");
       })
       .catch((err) => console.error(err));
-  }, [user?.email]);
+  }, [user?.email, axiosSecure]);
 
+  // Handle profile update including image upload
   const handleUpdate = async (e) => {
     e.preventDefault();
 
     let uploadedImageURL = userData?.photo;
 
-    // Upload image to imgbb if selected
+    // Upload image if selected
     if (imageFile) {
       const formData = new FormData();
       formData.append("image", imageFile);
@@ -83,84 +92,111 @@ const MyProfile = () => {
 
   return (
     <motion.section
-      className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow mt-10"
-      initial={{ opacity: 0, y: 30 }}
+      className="max-w-4xl mx-auto p-8 bg-white dark:bg-gray-900 rounded-lg shadow-lg mt-12"
+      initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Profile Overview */}
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+      {/* USER ROLE HEADER */}
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">
+          My Profile
+        </h1>
+        {userRole && (
+          <span
+            className={`px-4 py-2 rounded-full uppercase tracking-wide font-semibold select-none ${
+              ROLE_COLORS[userRole] || "bg-gray-600 text-white"
+            }`}
+            title={`You are logged in as ${userRole}`}
+          >
+            {userRole}
+          </span>
+        )}
+      </div>
+
+      {/* PROFILE OVERVIEW */}
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10">
         <img
           src={userData?.photo || "/default-avatar.png"}
           alt="Profile"
-          className="w-24 h-24 rounded-full object-cover border-4 border-emerald-500"
+          className="w-28 h-28 rounded-full object-cover border-4 border-emerald-500 shadow-md"
+          loading="lazy"
         />
         <div>
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
-            {userData?.name}
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">
+            {userData?.name || "Traveler"}
           </h2>
-          <p className="text-gray-500 dark:text-gray-400">{userData?.email}</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">{userData?.email}</p>
         </div>
       </div>
 
-      {/* Booking Stats */}
-      {userRole === 'tourist' && (
-      <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-emerald-100 dark:bg-emerald-900 p-4 rounded-xl text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-300">Total Bookings</p>
-          <p className="text-2xl font-bold text-emerald-700 dark:text-white">
-            {bookingStats.total}
-          </p>
+      {/* BOOKING STATS - only for tourist */}
+      {userRole === "tourist" && (
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
+          <StatBox
+            label="Total Bookings"
+            value={bookingStats.total}
+            bgColor="bg-emerald-100 dark:bg-emerald-900"
+            textColor="text-emerald-700 dark:text-white"
+          />
+          <StatBox
+            label="Confirmed"
+            value={bookingStats.confirmed}
+            bgColor="bg-green-100 dark:bg-green-900"
+            textColor="text-green-700 dark:text-white"
+          />
+          <StatBox
+            label="Pending"
+            value={bookingStats.pending}
+            bgColor="bg-yellow-100 dark:bg-yellow-900"
+            textColor="text-yellow-700 dark:text-white"
+          />
         </div>
-        <div className="bg-green-100 dark:bg-green-900 p-4 rounded-xl text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-300">Confirmed</p>
-          <p className="text-2xl font-bold text-green-700 dark:text-white">
-            {bookingStats.confirmed}
-          </p>
-        </div>
-        <div className="bg-yellow-100 dark:bg-yellow-900 p-4 rounded-xl text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-300">Pending</p>
-          <p className="text-2xl font-bold text-yellow-700 dark:text-white">
-            {bookingStats.pending}
-          </p>
-        </div>
-      </div>
-)}
+      )}
 
-      {/* Update Form */}
-      <form onSubmit={handleUpdate} className="space-y-4">
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+      {/* UPDATE PROFILE FORM */}
+      <form onSubmit={handleUpdate} className="space-y-6 max-w-md mx-auto">
+        <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-700 pb-2">
           Update Profile
         </h3>
 
         <div>
-          <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="name"
+            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
+          >
             Full Name
           </label>
           <input
+            id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
+            placeholder="Enter your full name"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="photo"
+            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
+          >
             Upload New Photo
           </label>
           <input
+            id="photo"
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
-            className="w-full px-4 py-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-4 py-2 text-gray-900 dark:text-white cursor-pointer"
           />
         </div>
 
         <button
           type="submit"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded w-full md:w-auto"
+          className="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
         >
           Update Profile
         </button>
@@ -168,5 +204,16 @@ const MyProfile = () => {
     </motion.section>
   );
 };
+
+// Reusable stat box component for booking stats
+const StatBox = ({ label, value, bgColor, textColor }) => (
+  <div
+    className={`${bgColor} p-6 rounded-xl text-center shadow-sm transition-transform transform hover:scale-105 cursor-default`}
+    aria-label={label}
+  >
+    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{label}</p>
+    <p className={`text-3xl font-extrabold ${textColor}`}>{value}</p>
+  </div>
+);
 
 export default MyProfile;
