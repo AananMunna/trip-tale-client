@@ -59,8 +59,8 @@ export default function TourismAndGuideTabs() {
               >
                 <Link to={`/packages/${pkg._id}`}>                
                 <img
-                  src={pkg.images}
-                  alt={pkg.title}
+                  src={pkg?.images}
+                  alt={pkg?.title}
                   className="h-64 w-full object-cover group-hover:scale-105 transition-transform duration-300 brightness-95"
                 />
                 </Link>
@@ -102,8 +102,8 @@ export default function TourismAndGuideTabs() {
                   className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center hover:shadow-xl transition-shadow duration-300"
                 >
                   <img
-                    src={guide.photo}
-                    alt={guide.name}
+                    src={guide?.photo}
+                    alt={guide?.name}
                     className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-blue-300 dark:border-blue-500"
                   />
                   <h3 className="text-lg font-bold mb-2">{guide.name}</h3>

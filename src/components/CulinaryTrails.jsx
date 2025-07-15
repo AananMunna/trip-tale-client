@@ -1,5 +1,6 @@
 // HiddenGems.jsx
 import React from "react";
+import { Link } from "react-router";
 
 const hiddenPlaces = [
   {
@@ -24,28 +25,31 @@ const hiddenPlaces = [
 
 export default function HiddenGems() {
   return (
-    <section className="px-6 py-20 max-w-7xl mx-auto bg-gradient-to-br from-sky-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white rounded-xl shadow-md transition-colors duration-500">
-      <h2 className="text-center text-4xl font-extrabold mb-14 tracking-tight text-gray-900 dark:text-white">
+    <section className="max-w-7xl mx-auto px-6 py-20 text-gray-900 dark:text-white">
+      <h2 className="text-center text-4xl font-extrabold mb-16 tracking-tight">
         🗺️ Hidden Gems of Bangladesh
       </h2>
-      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
         {hiddenPlaces.map((place, idx) => (
-          <div
-            key={idx}
-            className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group"
-          >
-            <img
-              src={place.image}
-              alt={place.name}
-              className="h-56 w-full object-cover group-hover:scale-105 transition-transform duration-300"
-              loading="lazy"
-            />
-            <div className="p-6 space-y-2">
-              <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400">{place.name}</h3>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                📍 {place.location}
-              </p>
-              <p className="text-gray-800 dark:text-gray-300 text-sm">
+          <div key={idx} className="space-y-3">
+            {/* Image as a clickable link */}
+            <Link to="/all-trips" aria-label={`Explore ${place.name}`}>
+              <img
+                src={place.image}
+                alt={place.name}
+                loading="lazy"
+                className="w-full h-64 object-cover rounded-xl hover:scale-[1.03] hover:brightness-105 transition duration-300 shadow-md"
+              />
+            </Link>
+
+            {/* Text Info (no card!) */}
+            <div className="pl-1">
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                {place.name}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">📍 {place.location}</p>
+              <p className="text-base text-gray-700 dark:text-gray-300 mt-1 leading-relaxed">
                 {place.description}
               </p>
             </div>
