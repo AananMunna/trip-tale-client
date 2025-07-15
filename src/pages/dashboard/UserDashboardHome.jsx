@@ -10,70 +10,78 @@ import {
   FaDollarSign,
   FaSuitcase,
   FaUserTie,
-  FaRegNewspaper
+  FaRegNewspaper,
 } from "react-icons/fa";
-import { AuthContext } from './../../context/AuthProvider';
+import { AuthContext } from "../../context/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+
+const COLORS = ["#0088FE", "#00C49F"];
 
 const UserDashboardHome = () => {
   const { user, userRole } = useContext(AuthContext);
   const role = userRole || "tourist";
   const axiosSecure = useAxiosSecure();
 
-  // get total payments
+  // Fetch total payments - only for admin
   const { data: stats = {} } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       const res = await axiosSecure.get(`/admin/stats/payments?email=${user?.email}`);
-
       return res.data;
     },
     enabled: role === "admin",
   });
 
+  // Fetch users by role - admin
+  const { data: usersByRole = { guides: [], tourists: [] } } = useQuery({
+    queryKey: ["admin-users-by-role"],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/admin/users-by-role?email=${user?.email}`);
+      return res.data;
+    },
+    enabled: role === "admin",
+  });
 
-  // get all user tourist and guide
-  const { data: usersByRole, isLoading } = useQuery({
-  queryKey: ["admin-users-by-role"],
-  queryFn: async () => {
-    const res = await axiosSecure.get(`/admin/users-by-role?email=${user?.email}`);
-    return res.data;
-  },
-});
+  // Fetch all packages
+  const { data: packages = [] } = useQuery({
+    queryKey: ["packages"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/packages");
+      return res.data;
+    },
+  });
 
+  // Fetch all stories
+  const { data: stories = [] } = useQuery({
+    queryKey: ["stories"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/stories");
+      return res.data;
+    },
+  });
 
-// get all packages length
-const { data: packages = [] } = useQuery({
-  queryKey: ["packages"],
-  queryFn: async () => {
-    const res = await axiosSecure.get("/packages");
-    return res.data;
-  },
-});
+  // Prepare chart data for admin
+  const pieData = [
+    { name: "Guides", value: usersByRole?.guides?.length || 0 },
+    { name: "Tourists", value: usersByRole?.tourists?.length || 0 },
+  ];
 
-
-// get all stories length
-const { data: stories = [] } = useQuery({
-  queryKey: ["packages"],
-  queryFn: async () => {
-    const res = await axiosSecure.get("/stories");
-    return res.data;
-  },
-});
-
-
-
-
+  const barData = [
+    { month: "Jan", payments: 2000 },
+    { month: "Feb", payments: 3000 },
+    { month: "Mar", payments: 2500 },
+    { month: "Apr", payments: stats?.totalPayments || 1000 }, // Fake/mock example
+  ];
 
   return (
     <div className="p-6 text-gray-800 dark:text-gray-100">
       <h2 className="text-3xl font-bold mb-6">Welcome, {user?.displayName || "Traveler"}! 🌍</h2>
 
-      {/* ========== TOURIST VIEW ========== */}
+      {/* ========== TOURIST DASHBOARD ========== */}
       {role === "tourist" && (
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Profile */}
           <Card icon={<FaUser />} title="My Profile" color="blue">
             <p>Name: {user?.displayName}</p>
             <p>Email: {user?.email}</p>
@@ -82,7 +90,6 @@ const { data: stories = [] } = useQuery({
             </Link>
           </Card>
 
-          {/* Bookings */}
           <Card icon={<FaCalendarAlt />} title="My Bookings" color="emerald">
             <p>See all your tour reservations and booking statuses.</p>
             <Link to="/dashboard/my-bookings" className="text-emerald-500 hover:underline mt-3 inline-block">
@@ -90,7 +97,6 @@ const { data: stories = [] } = useQuery({
             </Link>
           </Card>
 
-          {/* Payments */}
           <Card icon={<FaMoneyCheckAlt />} title="Payment History" color="indigo">
             <p>View payments and invoices for completed bookings.</p>
             <Link to="/dashboard/payment-history" className="text-indigo-500 hover:underline mt-3 inline-block">
@@ -100,7 +106,7 @@ const { data: stories = [] } = useQuery({
         </div>
       )}
 
-      {/* ========== GUIDE VIEW ========== */}
+      {/* ========== GUIDE DASHBOARD ========== */}
       {role === "guide" && (
         <div className="grid md:grid-cols-2 gap-6">
           <Card icon={<FaMapMarkedAlt />} title="My Tours" color="pink">
@@ -119,62 +125,9 @@ const { data: stories = [] } = useQuery({
         </div>
       )}
 
-      {/* ========== ADMIN VIEW ========== */}
+      {/* ========== ADMIN DASHBOARD ========== */}
       {role === "admin" && (
         <div className="space-y-8">
-          {/* Admin Profile */}
-          {/* <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-300 dark:border-gray-700 max-w-xl mx-auto">
-            <div className="flex items-center gap-4">
-              <img
-                src={adminProfile?.photo || user?.photoURL}
-                alt="Admin"
-                className="w-16 h-16 rounded-full border-2 border-gray-400"
-              />
-              <div className="flex-1">
-                {editMode ? (
-                  <>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="border rounded p-2 w-full mb-2"
-                      placeholder="Your Name"
-                    />
-                    <input
-                      type="text"
-                      value={formData.photo}
-                      onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
-                      className="border rounded p-2 w-full"
-                      placeholder="Photo URL"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xl font-semibold">{adminProfile?.name || user?.displayName}</p>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
-                    <p className="text-sm font-medium text-blue-600">Role: Admin</p>
-                  </>
-                )}
-              </div>
-              {editMode ? (
-                <button
-                  onClick={handleSave}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                >
-                  Save
-                </button>
-              ) : (
-                <button
-                  onClick={handleEdit}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-              )}
-            </div>
-          </div> */}
-
-          {/* Admin Stats */}
           <div className="grid md:grid-cols-3 gap-6">
             <StatCard icon={<FaDollarSign />} label="Total Payments" value={`$${stats?.totalPayments || 0}`} color="indigo" />
             <StatCard icon={<FaUserTie />} label="Total Guides" value={usersByRole?.guides?.length || 0} color="pink" />
@@ -182,13 +135,43 @@ const { data: stories = [] } = useQuery({
             <StatCard icon={<FaUsers />} label="Total Clients" value={usersByRole?.tourists?.length || 0} color="blue" />
             <StatCard icon={<FaRegNewspaper />} label="Total Stories" value={stories?.length || 0} color="yellow" />
           </div>
+
+          {/* Admin Chart Section */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-300 dark:border-gray-700">
+              <h3 className="text-lg font-semibold mb-2">User Role Distribution</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={80} label>
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-300 dark:border-gray-700">
+              <h3 className="text-lg font-semibold mb-2">Monthly Payments</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="payments" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-// 💡 Reusable Card component
+// 🧩 Reusable Card Component
 const Card = ({ icon, title, children, color }) => (
   <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
     <div className="flex items-center gap-4 mb-4">
@@ -199,7 +182,7 @@ const Card = ({ icon, title, children, color }) => (
   </div>
 );
 
-// 📊 Admin Stat Card
+// 📊 Stat Card for Admin Stats
 const StatCard = ({ icon, label, value, color }) => (
   <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 flex items-center gap-4">
     <div className={`text-${color}-600 text-3xl`}>{icon}</div>
