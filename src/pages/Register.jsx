@@ -165,7 +165,7 @@ const handleGoogleLogin = async () => {
 
 
   return (
-    <div className="min-h-screen py-10 bg-gradient-to-br from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 flex items-center justify-center p-4 transition-colors duration-700">
+    <div className="min-h-screen bg-gradient-to-br py-20 from-emerald-600 to-cyan-500 dark:from-emerald-900 dark:to-cyan-900 flex items-center justify-center p-4 transition-colors duration-700">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}

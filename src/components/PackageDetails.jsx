@@ -7,6 +7,7 @@ import { useContext, useState } from "react";
 import PremiumGallery from "./PremiumGallery";
 import { AuthContext } from "../context/AuthProvider";
 import { motion } from 'framer-motion';
+import Swal from "sweetalert2";
 
 const PackageDetails = () => {
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
@@ -45,7 +46,21 @@ const PackageDetails = () => {
     }
     if (userRole === "tourist") {
       setIsBookModalOpen(true);
-    }
+    }else {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Access Denied 😢',
+    text: "You can't book the package because you are a guide.",
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Got it',
+    backdrop: `
+      rgba(0,0,123,0.4)
+      left top
+      no-repeat
+    `,
+  });
+}
+
   };
 
   return (

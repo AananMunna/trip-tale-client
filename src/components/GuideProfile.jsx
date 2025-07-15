@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { motion } from "framer-motion";
@@ -7,6 +7,7 @@ import { FaUserTie, FaEnvelope, FaClock } from "react-icons/fa";
 
 export default function GuideProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
   const { data: guide, isPending, error } = useQuery({
@@ -26,7 +27,7 @@ export default function GuideProfile() {
       day: "numeric",
     });
 
-  // 🕔 Time since (very basic)
+  // 🕔 Time since (basic)
   const timeAgo = (isoDate) => {
     const seconds = Math.floor((Date.now() - new Date(isoDate)) / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -57,11 +58,30 @@ export default function GuideProfile() {
 
   return (
     <section className="min-h-screen px-4 sm:px-10 py-40 bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 transition duration-500">
+      
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-6 flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline hover:gap-3 transition-all duration-300 font-medium"
+      >
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back
+      </button>
+
+      {/* 🎯 Guide Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="max-w-4xl mx-auto  bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden p-8 md:p-12 flex flex-col md:flex-row items-center gap-10"
+        className="max-w-4xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden p-8 md:p-12 flex flex-col md:flex-row items-center gap-10"
       >
         {/* 📸 Photo */}
         <div className="flex-shrink-0 w-40 h-40 rounded-full overflow-hidden border-4 border-blue-300 dark:border-blue-600 shadow-lg">

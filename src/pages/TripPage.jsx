@@ -24,7 +24,7 @@ const TripPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[300px] flex flex-col items-center justify-center text-center gap-3">
+      <div className="min-h-screen flex flex-col items-center justify-center text-center gap-3">
         <span className="loading loading-bars loading-lg text-emerald-500" />
         <p className="text-gray-500">Fetching your next adventure...</p>
       </div>

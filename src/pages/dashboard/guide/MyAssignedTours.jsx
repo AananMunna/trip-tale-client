@@ -8,7 +8,6 @@ const MyAssignedTours = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
 
-  // Fetch assigned tours for this guide
   const {
     data: tours = [],
     isLoading,
@@ -24,7 +23,6 @@ const MyAssignedTours = () => {
     enabled: Boolean(user?.email),
   });
 
-  // Mutation to update tour status
   const updateStatusMutation = useMutation({
     mutationFn: ({ tourId, status }) =>
       axiosSecure.patch(`/assigned-tours/${tourId}`, { status }),
@@ -59,40 +57,36 @@ const MyAssignedTours = () => {
 
   if (isLoading) return <p>Loading assigned tours...</p>;
   if (isError) return <p>Error loading tours: {error.message}</p>;
-
   if (tours.length === 0) return <p>No assigned tours found.</p>;
 
   return (
-    <div className="overflow-x-auto">
-      <h2 className="text-2xl font-semibold mb-4 text-emerald-600 dark:text-emerald-400">
+    <div className="px-4 md:px-10 py-6">
+      <h2 className="text-2xl font-bold mb-6 text-emerald-700 dark:text-emerald-400">
         My Assigned Tours
       </h2>
-      <table className="min-w-full bg-white dark:bg-gray-800 rounded shadow-md">
-        <thead className="bg-emerald-600 text-white">
-          <tr>
-            <th className="py-3 px-6 text-left">Package Name</th>
-            <th className="py-3 px-6 text-left">Tourist Name</th>
-            <th className="py-3 px-6 text-left">Tour Date</th>
-            <th className="py-3 px-6 text-left">Price</th>
-            <th className="py-3 px-6 text-left">Status</th>
-            <th className="py-3 px-6 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tours.map((tour) => (
-            <tr
-              key={tour._id}
-              className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <td className="py-3 px-6">{tour.packageTitle}</td>
-              <td className="py-3 px-6">{tour.touristName}</td>
-              <td className="py-3 px-6">
-                {new Date(tour.tourDate).toLocaleDateString()}
-              </td>
-              <td className="py-3 px-6">৳{tour.price}</td>
-              <td className="py-3 px-6">
-                <span
-                  className={`px-2 py-1 rounded text-white text-xs ${
+
+      {/* Large Screen Table */}
+      <div className="hidden md:block overflow-x-auto rounded-lg shadow-lg">
+        <table className="min-w-full bg-white dark:bg-gray-800">
+          <thead className="bg-emerald-600 text-white">
+            <tr>
+              <th className="py-3 px-6 text-left">Package Name</th>
+              <th className="py-3 px-6 text-left">Tourist Name</th>
+              <th className="py-3 px-6 text-left">Tour Date</th>
+              <th className="py-3 px-6 text-left">Price</th>
+              <th className="py-3 px-6 text-left">Status</th>
+              <th className="py-3 px-6 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tours.map((tour) => (
+              <tr key={tour._id} className="border-b border-gray-200 dark:border-gray-700">
+                <td className="py-3 px-6">{tour.packageTitle}</td>
+                <td className="py-3 px-6">{tour.touristName}</td>
+                <td className="py-3 px-6">{new Date(tour.tourDate).toLocaleDateString()}</td>
+                <td className="py-3 px-6">৳{tour.price}</td>
+                <td className="py-3 px-6">
+                  <span className={`px-2 py-1 rounded text-white text-xs ${
                     tour.status === "Pending"
                       ? "bg-yellow-500"
                       : tour.status === "In Review"
@@ -100,39 +94,92 @@ const MyAssignedTours = () => {
                       : tour.status === "Accepted"
                       ? "bg-green-500"
                       : "bg-red-500"
-                  }`}
-                >
-                  {tour.status}
-                </span>
-              </td>
-              <td className="py-3 px-6 flex gap-2">
-                <button
-                  disabled={tour.status !== "in-review" || updateStatusMutation.isLoading}
-                  onClick={() => handleAccept(tour._id)}
-                  className={`px-3 py-1 rounded text-white text-sm ${
-                    tour.status === "in-review"
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Accept
-                </button>
-                <button
-                  disabled={tour.status !== "pending" || updateStatusMutation.isLoading}
-                  onClick={() => handleReject(tour._id)}
-                  className={`px-3 py-1 rounded text-white text-sm ${
-                    tour.status === "pending"
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Reject
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  }`}>
+                    {tour.status}
+                  </span>
+                </td>
+                <td className="py-3 px-6 flex gap-2">
+                  <button
+                    disabled={tour.status !== "in-review" || updateStatusMutation.isLoading}
+                    onClick={() => handleAccept(tour._id)}
+                    className={`px-3 py-1 rounded text-white text-sm ${
+                      tour.status === "in-review"
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    disabled={tour.status !== "pending" || updateStatusMutation.isLoading}
+                    onClick={() => handleReject(tour._id)}
+                    className={`px-3 py-1 rounded text-white text-sm ${
+                      tour.status === "pending"
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    Reject
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Small Screen Cards */}
+      <div className="md:hidden grid gap-4">
+        {tours.map((tour) => (
+          <div
+            key={tour._id}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 space-y-2"
+          >
+            <p><span className="font-semibold">Package:</span> {tour.packageTitle}</p>
+            <p><span className="font-semibold">Tourist:</span> {tour.touristName}</p>
+            <p><span className="font-semibold">Date:</span> {new Date(tour.tourDate).toLocaleDateString()}</p>
+            <p><span className="font-semibold">Price:</span> ৳{tour.price}</p>
+            <p>
+              <span className="font-semibold">Status:</span>{" "}
+              <span className={`px-2 py-1 rounded text-white text-xs ${
+                tour.status === "Pending"
+                  ? "bg-yellow-500"
+                  : tour.status === "In Review"
+                  ? "bg-blue-500"
+                  : tour.status === "Accepted"
+                  ? "bg-green-500"
+                  : "bg-red-500"
+              }`}>
+                {tour.status}
+              </span>
+            </p>
+            <div className="flex gap-3 mt-2">
+              <button
+                disabled={tour.status !== "in-review" || updateStatusMutation.isLoading}
+                onClick={() => handleAccept(tour._id)}
+                className={`flex-1 px-3 py-1 rounded text-white text-sm ${
+                  tour.status === "in-review"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Accept
+              </button>
+              <button
+                disabled={tour.status !== "pending" || updateStatusMutation.isLoading}
+                onClick={() => handleReject(tour._id)}
+                className={`flex-1 px-3 py-1 rounded text-white text-sm ${
+                  tour.status === "pending"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -93,83 +93,95 @@ const AddStory = () => {
   };
 
   return (
-    <section className="max-w-3xl mx-auto mt-10 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-indigo-700 dark:text-yellow-400">
-        Share Your Adventure
-      </h2>
+<section className="max-w-4xl mx-auto mt-12 p-10 backdrop-blur-lg bg-white/20 dark:bg-black/30 border border-white/10 shadow-2xl rounded-2xl">
+  <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-ember-500 via-teal-500 to-cyan-500">
+    ✨ Share Your Epic Adventure ✨
+  </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Title
-          </label>
-          <input
-            type="text"
-            required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Where did you go?"
-            className="w-full px-4 py-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
-          />
-        </div>
+  <form onSubmit={handleSubmit} className="space-y-8">
+    {/* Title */}
+    <div className="relative">
+      <label className="absolute -top-3 left-4 px-1 text-sm font-semibold text-emerald-600 dark:text-teal-400 bg-white dark:bg-black">
+        Title
+      </label>
+      <input
+        type="text"
+        required
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="e.g. A Journey Through the Hills of Bandarban"
+        className="w-full px-4 py-3 rounded-lg border border-emerald-200 dark:border-emerald-700 bg-white/50 dark:bg-black/30 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      />
+    </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Story
-          </label>
-          <textarea
-            required
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            rows={5}
-            placeholder="Describe your experience..."
-            className="w-full px-4 py-2 rounded border dark:border-gray-600 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white"
-          />
-        </div>
+    {/* Story */}
+    <div className="relative">
+      <label className="absolute -top-3 left-4 px-1 text-sm font-semibold text-emerald-600 dark:text-teal-400 bg-white dark:bg-black">
+        Your Story
+      </label>
+      <textarea
+        required
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={5}
+        placeholder="Write something magical..."
+        className="w-full px-4 py-3 rounded-lg border border-emerald-200 dark:border-emerald-700 bg-white/50 dark:bg-black/30 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+      />
+    </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Upload Photos (Max 5)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageChange}
-            className="w-full text-sm text-gray-700 dark:text-white"
-          />
-        </div>
+    {/* File Upload */}
+    <div className="relative">
+      <label className="block text-sm font-semibold text-emerald-600 dark:text-yellow-400 mb-2">
+        Upload Photos <span className="text-xs text-gray-400">(Max 5)</span>
+      </label>
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleImageChange}
+        className="file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+      />
+    </div>
 
-        {previewURLs.length > 0 && (
-          <div className="flex flex-wrap gap-4 mt-4">
-            {previewURLs.map((url, idx) => (
-              <div key={idx} className="relative group">
-                <img
-                  src={url}
-                  alt={`preview-${idx}`}
-                  className="w-28 h-28 object-cover rounded-lg border shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeImage(idx)}
-                  className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md"
-                >
-                  <FaTrash size={12} />
-                </button>
-              </div>
-            ))}
+    {/* Image Preview */}
+    {previewURLs.length > 0 && (
+      <div className="flex flex-wrap gap-4 mt-4">
+        {previewURLs.map((url, idx) => (
+          <div
+            key={idx}
+            className="relative group overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg"
+          >
+            <img
+              src={url}
+              alt={`preview-${idx}`}
+              className="w-28 h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+            />
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md"
+            >
+              <FaTrash size={12} />
+            </button>
           </div>
-        )}
+        ))}
+      </div>
+    )}
 
-        <button
-          type="submit"
-          disabled={uploading}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded transition duration-300"
-        >
-          {uploading ? "Uploading..." : "Publish Story"}
-        </button>
-      </form>
-    </section>
+    {/* Submit Button */}
+    <div>
+      <button
+        type="submit"
+        disabled={uploading}
+        className="w-full relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 disabled:opacity-60"
+      >
+        <span className="absolute w-full h-full bg-white opacity-10 animate-pulse"></span>
+        {uploading ? "Uploading..." : "🚀 Publish Story"}
+      </button>
+    </div>
+  </form>
+</section>
+
   );
 };
 
