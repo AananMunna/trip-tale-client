@@ -63,8 +63,8 @@ const CommunityPage = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-30 text-gray-800 dark:text-white">
-      <h2 className="text-4xl font-extrabold mb-10 text-center text-indigo-700 dark:text-yellow-400">
-        ✍️ Community Travel Stories
+      <h2 className="text-4xl font-extrabold text-center mb-3 tracking-tight text-gray-900 dark:text-white">
+         Community Travel Stories
       </h2>
 
       {stories.length === 0 ? (
