@@ -29,6 +29,8 @@ import ManageUsers from "../pages/admin/ManageUsers";
 import ManageTourGuideCandidates from "../pages/admin/ManageTourGuideCandidates";
 import GuideProfile from "../components/GuideProfile";
 import PrivateRoute from './../components/PrivateRoute';
+import AllPackages from "../pages/admin/AllPackages";
+import EditPackage from "../pages/admin/EditPackage";
 
 export const router = createBrowserRouter([
   {
@@ -103,6 +105,22 @@ export const router = createBrowserRouter([
       element: (
         <ProtectedRoute allowedRoles={["admin"]}>
           <AddPackage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "all-packages",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AllPackages />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "edit-package/:id",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <EditPackage />
         </ProtectedRoute>
       ),
     },

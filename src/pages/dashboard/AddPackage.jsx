@@ -17,18 +17,13 @@ const AddPackage = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      images: [{ file: null }],
+      images: null,
       tourPlan: [{ detail: "" }],
     },
   });
 
   const axiosSecure = useAxiosSecure();
   const [uploading, setUploading] = useState(false);
-
-  const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
-    control,
-    name: "images",
-  });
 
   const { fields: tourPlanFields, append: appendPlan, remove: removePlan } = useFieldArray({
     control,
@@ -54,18 +49,15 @@ const AddPackage = () => {
   const onSubmit = async (data) => {
     try {
       setUploading(true);
-
-      // Upload images one by one
+      const files = data.images;
       const uploadedImages = [];
-      for (const item of data.images) {
-        if (item.file && item.file[0]) {
-          const url = await uploadImage(item.file[0]);
-          if (!url) throw new Error("Gallery image upload failed");
-          uploadedImages.push(url);
-        }
+
+      for (const file of files) {
+        const url = await uploadImage(file);
+        if (!url) throw new Error("Gallery image upload failed");
+        uploadedImages.push(url);
       }
 
-      // Extract tourPlan strings
       const tourPlanDetails = data.tourPlan.map((plan) => plan.detail);
 
       const payload = {
@@ -90,107 +82,80 @@ const AddPackage = () => {
   };
 
   return (
- <motion.div
+    <motion.div
       className="max-w-3xl w-full mx-auto p-6 md:p-10 bg-white dark:bg-gray-900 rounded-2xl shadow-lg"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-900 dark:text-emerald-400">
-        🗺️ Add New Tour Package
+        📺 Add New Tour Package
       </h2>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-10"
-        encType="multipart/form-data"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
         {/* Title */}
-        <div>
-          <input
-            type="text"
-            placeholder="Package Title"
-            {...register("title", { required: "Title is required" })}
-            className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
-          />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-        </div>
+        <input
+          type="text"
+          placeholder="Package Title"
+          {...register("title", { required: "Title is required" })}
+          className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
+        />
+        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
 
         {/* Description */}
-        <div>
-          <textarea
-            rows={4}
-            placeholder="Description"
-            {...register("description", { required: "Description is required" })}
-            className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
-          ></textarea>
-          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
-        </div>
+        <textarea
+          rows={4}
+          placeholder="Description"
+          {...register("description", { required: "Description is required" })}
+          className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
+        ></textarea>
+        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
 
         {/* Tour Type */}
-        <div>
-          <input
-            type="text"
-            placeholder="Tour Type"
-            {...register("tourType", { required: "Tour type is required" })}
-            className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
-          />
-          {errors.tourType && <p className="text-red-500 text-sm mt-1">{errors.tourType.message}</p>}
-        </div>
+        <input
+          type="text"
+          placeholder="Tour Type"
+          {...register("tourType", { required: "Tour type is required" })}
+          className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
+        />
+        {errors.tourType && <p className="text-red-500 text-sm mt-1">{errors.tourType.message}</p>}
 
         {/* Duration */}
-        <div>
-          <input
-            type="text"
-            placeholder="3 Days 2 Nights"
-            {...register("duration", { required: "Duration is required" })}
-            className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
-          />
-          {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>}
-        </div>
+        <input
+          type="text"
+          placeholder="3 Days 2 Nights"
+          {...register("duration", { required: "Duration is required" })}
+          className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
+        />
+        {errors.duration && <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>}
 
         {/* Price */}
-        <div>
-          <input
-            type="number"
-            placeholder="Price in BDT"
-            {...register("price", {
-              required: "Price is required",
-              valueAsNumber: true,
-              min: { value: 1, message: "Price must be greater than 0" },
-            })}
-            className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
-          />
-          {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
-        </div>
+        <input
+          type="number"
+          placeholder="Price in BDT"
+          {...register("price", {
+            required: "Price is required",
+            valueAsNumber: true,
+            min: { value: 1, message: "Price must be greater than 0" },
+          })}
+          className="w-full border-b bg-transparent py-3 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-emerald-500 text-gray-800 dark:text-white"
+        />
+        {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
 
         {/* Images */}
         <div>
           <p className="text-sm text-gray-700 dark:text-white mb-2 font-medium">Upload Images</p>
-          {imageFields.map((field, index) => (
-            <div key={field.id} className="flex gap-3 mb-2 items-center">
-              <input
-                {...register(`images.${index}.file`)}
-                type="file"
-                accept="image/*"
-                className="text-sm text-gray-600 dark:text-white"
-              />
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="text-red-500 text-lg"
-              >
-                &times;
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => appendImage({ file: null })}
-            className="mt-2 text-sm text-emerald-600 dark:text-emerald-400 hover:underline"
-          >
-            + Add Image
-          </button>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            {...register("images", { required: "Please upload at least one image" })}
+            className="text-sm text-gray-600 dark:text-white"
+          />
+          <p className="text-xs mt-1 text-gray-500 dark:text-gray-400">
+            Hold <kbd>Ctrl</kbd> (or <kbd>Cmd</kbd> on Mac) to select multiple.
+          </p>
+          {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
         </div>
 
         {/* Tour Plan */}
@@ -241,63 +206,5 @@ const AddPackage = () => {
     </motion.div>
   );
 };
-
-// Floating label input component
-const FloatingInput = ({ label, register, error, placeholder, required, type = "text" }) => (
-  <div className="relative z-0 w-full group">
-    <input
-      type={type}
-      placeholder=" "
-      {...register}
-      required={required}
-      className={`block py-3 px-4 w-full text-gray-900 bg-transparent border-2 border-gray-300 dark:border-gray-600 rounded-lg appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400 focus:border-emerald-400 dark:text-gray-100
-        ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}
-      `}
-      autoComplete="off"
-    />
-    <label
-      className={`absolute left-4 top-3 text-gray-500 dark:text-gray-400 text-md duration-300 transform -translate-y-3 scale-90 origin-[0] bg-white dark:bg-gray-900 px-1 pointer-events-none
-        group-focus-within:-translate-y-3 group-focus-within:scale-90 group-focus-within:text-emerald-500
-        ${error ? "text-red-500" : ""}
-      `}
-    >
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    {error && <p className="mt-1 text-sm text-red-500">{error.message}</p>}
-  </div>
-);
-
-// Floating label textarea component
-const FloatingTextarea = ({ label, register, error, placeholder, rows = 4, required }) => (
-  <div className="relative z-0 w-full group">
-    <textarea
-      placeholder=" "
-      rows={rows}
-      {...register}
-      required={required}
-      className={`block py-3 px-4 w-full text-gray-900 bg-transparent border-2 border-gray-300 dark:border-gray-600 rounded-lg resize-none appearance-none focus:outline-none focus:ring-4 focus:ring-emerald-400 focus:border-emerald-400 dark:text-gray-100
-        ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}
-      `}
-      autoComplete="off"
-    />
-    <label
-      className={`absolute left-4 top-3 text-gray-500 dark:text-gray-400 text-md duration-300 transform -translate-y-3 scale-90 origin-[0] bg-white dark:bg-gray-900 px-1 pointer-events-none
-        group-focus-within:-translate-y-3 group-focus-within:scale-90 group-focus-within:text-emerald-500
-        ${error ? "text-red-500" : ""}
-      `}
-    >
-      {label} <span className="text-red-500">*</span>
-    </label>
-    {error && <p className="mt-1 text-sm text-red-500">{error.message}</p>}
-  </div>
-);
-
-// Section wrapper with title & padding
-const SectionCard = ({ title, children }) => (
-  <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700">
-    <h3 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-emerald-400">{title}</h3>
-    {children}
-  </div>
-);
 
 export default AddPackage;

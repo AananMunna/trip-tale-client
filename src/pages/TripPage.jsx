@@ -41,7 +41,7 @@ const TripPage = () => {
 
   if (packages.length === 0) {
     return (
-      <div className="text-center py-20 text-gray-500 dark:text-gray-400">
+      <div className="text-center h-screen flex justify-center items-center flex-col py-20 text-gray-500 dark:text-gray-400">
         <PlaneTakeoff className="w-12 h-12 mx-auto mb-4 text-emerald-500" />
         <p>No trips available at the moment. Stay tuned!</p>
       </div>

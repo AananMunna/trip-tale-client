@@ -59,6 +59,12 @@ const DashboardLayout = () => {
       icon: <FilePlus2 className="w-5 h-5" />,
       allowedRoles: ["admin"],
     },
+      {
+    path: "/dashboard/all-packages",
+    label: "All Package",
+    icon: <FilePlus2 className="w-5 h-5" />, // 💥 Icon added here!
+    allowedRoles: ["admin"],
+  },
     {
       path: "/dashboard/manage-users",
       label: "Manage Users",
