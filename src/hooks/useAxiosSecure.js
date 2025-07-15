@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosSecure = axios.create({
-  baseURL: 'https://trip-tale-server.vercel.app',
+  baseURL: 'http://localhost:3000',
   // No auth headers yet because token not setup
 });
 
