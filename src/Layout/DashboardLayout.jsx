@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../context/AuthProvider";
 import { motion } from "framer-motion";
+import Footer from "../components/Footer";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -102,17 +103,14 @@ const DashboardLayout = () => {
 
   return (
     <div
-      className="flex h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 overflow-hidden"
+      className="flex min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-20">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-2xl font-bold text-teal-700 dark:text-emerald-300"
-          >
+          <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-teal-700 dark:text-emerald-300">
             <motion.span
               className="text-3xl"
               animate={{ rotate: [0, 15, -15, 0] }}
@@ -186,7 +184,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col md:mr-64">
+      <div className="flex flex-col flex-1 md:mr-64">
         {/* Mobile topbar */}
         <header className="md:hidden flex items-center justify-between px-5 py-3 bg-white dark:bg-gray-800 shadow">
           <button onClick={() => setSidebarOpen(true)} aria-label="Open menu">
@@ -200,10 +198,13 @@ const DashboardLayout = () => {
           />
         </header>
 
-        {/* Page content */}
+        {/* Scrollable content */}
         <main className="flex-1 overflow-y-auto p-5 bg-gray-50 dark:bg-gray-900">
           <Outlet />
         </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );
