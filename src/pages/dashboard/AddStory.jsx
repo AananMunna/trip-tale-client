@@ -93,8 +93,8 @@ const AddStory = () => {
   };
 
   return (
-<section className="max-w-4xl mx-auto mt-12 p-10 backdrop-blur-lg bg-white/20 dark:bg-black/30 border border-white/10 shadow-2xl rounded-2xl">
-  <h2 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-ember-500 via-teal-500 to-cyan-500">
+<section className="max-w-4xl w-full mx-auto mt-12 px-4 sm:px-6 lg:px-10 py-10 backdrop-blur-lg bg-white/20 dark:bg-black/30 border border-white/10 shadow-2xl rounded-2xl">
+  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-teal-500 to-cyan-500">
     ✨ Share Your Epic Adventure ✨
   </h2>
 
@@ -139,13 +139,13 @@ const AddStory = () => {
         accept="image/*"
         multiple
         onChange={handleImageChange}
-        className="file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+        className="w-full file:mr-4 file:px-4 file:py-2 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
       />
     </div>
 
     {/* Image Preview */}
     {previewURLs.length > 0 && (
-      <div className="flex flex-wrap gap-4 mt-4">
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
         {previewURLs.map((url, idx) => (
           <div
             key={idx}
@@ -154,7 +154,7 @@ const AddStory = () => {
             <img
               src={url}
               alt={`preview-${idx}`}
-              className="w-28 h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+              className="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
             <button
               type="button"
@@ -181,6 +181,7 @@ const AddStory = () => {
     </div>
   </form>
 </section>
+
 
   );
 };
