@@ -22,8 +22,16 @@ const DashboardLayout = () => {
   const { user, userRole } = useContext(AuthContext);
 
   const navLinks = [
-    { path: "/dashboard/dashboardHome", label: "Home", icon: <Home className="w-5 h-5" /> },
-    { path: "/dashboard/my-profile", label: "My Profile", icon: <User className="w-5 h-5" /> },
+    {
+      path: "/dashboard/dashboardHome",
+      label: "Home",
+      icon: <Home className="w-5 h-5" />,
+    },
+    {
+      path: "/dashboard/my-profile",
+      label: "My Profile",
+      icon: <User className="w-5 h-5" />,
+    },
     {
       path: "/dashboard/my-bookings",
       label: "My Bookings",
@@ -36,7 +44,11 @@ const DashboardLayout = () => {
       icon: <Wallet className="w-5 h-5" />,
       allowedRoles: ["tourist"],
     },
-    { path: "/dashboard/add-story", label: "Add Story", icon: <FilePlus2 className="w-5 h-5" /> },
+    {
+      path: "/dashboard/add-story",
+      label: "Add Story",
+      icon: <FilePlus2 className="w-5 h-5" />,
+    },
     {
       path: "/dashboard/manage-stories",
       label: "Manage Stories",
@@ -60,12 +72,12 @@ const DashboardLayout = () => {
       icon: <FilePlus2 className="w-5 h-5" />,
       allowedRoles: ["admin"],
     },
-      {
-  path: "/dashboard/all-packages",
-  label: "All Package",
-  icon: <Package className="w-5 h-5" />, // 📦 Clean & clear for travel packages
-  allowedRoles: ["admin"],
-},
+    {
+      path: "/dashboard/all-packages",
+      label: "All Package",
+      icon: <Package className="w-5 h-5" />, // 📦 Clean & clear for travel packages
+      allowedRoles: ["admin"],
+    },
 
     {
       path: "/dashboard/manage-users",
@@ -102,7 +114,10 @@ const DashboardLayout = () => {
         </div>
         <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
           {navLinks
-            .filter(link => !link.allowedRoles || link.allowedRoles.includes(userRole))
+            .filter(
+              (link) =>
+                !link.allowedRoles || link.allowedRoles.includes(userRole)
+            )
             .map((link, idx) => (
               <NavLink
                 key={idx}
@@ -115,7 +130,9 @@ const DashboardLayout = () => {
                   }`
                 }
               >
-                <span className="group-hover:scale-110 transition-transform duration-200">{link.icon}</span>
+                <span className="group-hover:scale-110 transition-transform duration-200">
+                  {link.icon}
+                </span>
                 <span>{link.label}</span>
               </NavLink>
             ))}
@@ -141,7 +158,10 @@ const DashboardLayout = () => {
         </div>
         <nav className="flex flex-col gap-2 mt-4 px-4 pb-6">
           {navLinks
-            .filter(link => !link.allowedRoles || link.allowedRoles.includes(userRole))
+            .filter(
+              (link) =>
+                !link.allowedRoles || link.allowedRoles.includes(userRole)
+            )
             .map((link, idx) => (
               <NavLink
                 key={idx}
@@ -154,7 +174,9 @@ const DashboardLayout = () => {
                   }`
                 }
               >
-                <span className="group-hover:scale-110 transition-transform duration-200">{link.icon}</span>
+                <span className="group-hover:scale-110 transition-transform duration-200">
+                  {link.icon}
+                </span>
                 <span>{link.label}</span>
               </NavLink>
             ))}
@@ -168,7 +190,9 @@ const DashboardLayout = () => {
           <button onClick={() => setSidebarOpen(true)}>
             <Menu className="w-6 h-6 text-gray-700 dark:text-gray-200" />
           </button>
-          <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">Dashboard</h2>
+          <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+            Dashboard
+          </h2>
           <img
             src={user?.photoURL || "/default-avatar.png"}
             alt="User Avatar"
