@@ -25,7 +25,7 @@ const MyProfile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+// console.log(name);
   // Fetch bookings stats for tourist role
   useEffect(() => {
     if (userRole === "tourist") {
@@ -49,7 +49,7 @@ const MyProfile = () => {
         setName(res.data?.name || "");
       })
       .catch((err) => console.error(err));
-  }, [user?.email, axiosSecure]);
+  }, [user?.email]);
 
   // Handle profile update including image upload
 const handleUpdate = async (e) => {
@@ -81,6 +81,8 @@ const handleUpdate = async (e) => {
         return;
       }
     }
+
+    console.log(name);
 
     const updateDoc = {
       name,
