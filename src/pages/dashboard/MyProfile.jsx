@@ -23,13 +23,17 @@ const MyProfile = () => {
   const [userData, setUserData] = useState(null);
   const [name, setName] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // Fetch bookings stats for tourist role
   useEffect(() => {
     if (userRole === "tourist") {
       axiosSecure.get(`/bookings?email=${user?.email}`).then((res) => {
         const total = res.data.length;
-        const confirmed = res.data.filter((b) => b.status === "confirmed").length;
+        const confirmed = res.data.filter(
+          (b) => b.status === "confirmed"
+        ).length;
         const pending = total - confirmed;
         setBookingStats({ total, confirmed, pending });
       });
@@ -48,27 +52,33 @@ const MyProfile = () => {
   }, [user?.email, axiosSecure]);
 
   // Handle profile update including image upload
-  const handleUpdate = async (e) => {
-    e.preventDefault();
+const handleUpdate = async (e) => {
+  e.preventDefault();
 
-    let uploadedImageURL = userData?.photo;
+  if (isSubmitting) return; // Prevent multiple calls
+  setIsSubmitting(true); // 🔒 Lock the button
 
-    // Upload image if selected
+  let uploadedImageURL = userData?.photo;
+
+  try {
     if (imageFile) {
       const formData = new FormData();
-      formData.append("image", imageFile);
+      formData.append("file", imageFile);
+      formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+      formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
 
-      const imgbbAPIKey = import.meta.env.VITE_IMGBB_API_KEY;
-      const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`, {
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: "POST",
         body: formData,
       });
 
       const imgData = await uploadRes.json();
-      if (imgData.success) {
-        uploadedImageURL = imgData.data.url;
+      if (imgData.secure_url) {
+        uploadedImageURL = imgData.secure_url;
       } else {
-        return Swal.fire("Error", "Image upload failed!", "error");
+        Swal.fire("Error", "Image upload failed!", "error");
+        setIsSubmitting(false);
+        return;
       }
     }
 
@@ -77,18 +87,20 @@ const MyProfile = () => {
       photo: uploadedImageURL,
     };
 
-    axiosSecure
-      .patch(`/users/${user?.email}`, updateDoc)
-      .then((res) => {
-        if (res.data.modifiedCount > 0) {
-          Swal.fire("Success", "Profile updated successfully!", "success");
-          setUserData({ ...userData, ...updateDoc });
-        } else {
-          Swal.fire("No Change", "Nothing was updated.", "info");
-        }
-      })
-      .catch(() => Swal.fire("Error", "Update failed", "error"));
-  };
+    const res = await axiosSecure.patch(`/users/${user?.email}`, updateDoc);
+    if (res.data.modifiedCount > 0) {
+      Swal.fire("Success", "Profile updated successfully!", "success");
+      setUserData({ ...userData, ...updateDoc });
+    } else {
+      Swal.fire("No Change", "Nothing was updated.", "info");
+    }
+  } catch (err) {
+    Swal.fire("Error", "Update failed", "error");
+  } finally {
+    setIsSubmitting(false); // 🔓 Unlock after all is done
+  }
+};
+
 
   return (
     <motion.section
@@ -126,7 +138,9 @@ const MyProfile = () => {
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">
             {userData?.name || "Traveler"}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">{userData?.email}</p>
+          <p className="text-gray-600 dark:text-gray-400 font-medium">
+            {userData?.email}
+          </p>
         </div>
       </div>
 
@@ -170,7 +184,7 @@ const MyProfile = () => {
           <input
             id="name"
             type="text"
-            value={name}
+            defaultValue={name}
             onChange={(e) => setName(e.target.value)}
             required
             placeholder="Enter your full name"
@@ -194,12 +208,18 @@ const MyProfile = () => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-md transition-colors duration-300"
-        >
-          Update Profile
-        </button>
+       <button
+  type="submit"
+  disabled={isSubmitting}
+  className={`w-full md:w-auto font-semibold py-3 px-6 rounded-md transition-colors duration-300 ${
+    isSubmitting
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-emerald-600 hover:bg-emerald-700 text-white"
+  }`}
+>
+  {isSubmitting ? "Updating..." : "Update Profile"}
+</button>
+
       </form>
     </motion.section>
   );
