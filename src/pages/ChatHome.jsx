@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { getRoomId } from "../utils/getRoomId";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const ChatHome = () => {
   const { user } = useContext(AuthContext);
@@ -23,19 +24,32 @@ const ChatHome = () => {
     },
   });
 
-  console.log(selectedGuide);
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
-    <div className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-10 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 transition-all duration-300 pt-20">
+    <div className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-10 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 pt-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Chat UI */}
-        <div className="col-span-2  p-6 min-h-[60vh] flex items-center justify-center relative transition-all">
+        <div className={`col-span-2 p-4 transition-all duration-300 rounded-xl min-h-[60vh] ${
+          selectedGuide && isMobile ? "block" : "hidden md:flex"
+        } items-center justify-center relative bg-white/90 dark:bg-gray-900 shadow-xl border border-gray-300 dark:border-gray-700`}>
           {selectedGuide ? (
-            <ChatBox
-              roomId={getRoomId(user?.email, selectedGuide.email)}
-              receiver={selectedGuide.email}
-            />
+            <>
+              {/* Back button on mobile */}
+              {isMobile && (
+                <button
+                  onClick={() => setSelectedGuide(null)}
+                  className="absolute top-4 right-4 bg-white dark:bg-gray-700 text-gray-800 dark:text-white rounded-full shadow p-2 z-10"
+                >
+                  <ArrowRight size={20} />
+                </button>
+              )}
+              <ChatBox
+                roomId={getRoomId(user?.email, selectedGuide.email)}
+                receiver={selectedGuide.email}
+              />
+            </>
           ) : (
             <div className="text-center">
               <h3 className="text-lg text-gray-600 dark:text-gray-400 font-medium">
@@ -46,19 +60,15 @@ const ChatHome = () => {
         </div>
 
         {/* Guide Sidebar */}
-        <div className="col-span-1 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-5 overflow-y-auto max-h-[80vh]">
+        <div className={`col-span-1 transition-all duration-300 ${
+          selectedGuide && isMobile ? "hidden" : "block"
+        } bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-5 overflow-y-auto max-h-[80vh]`}>
           <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
             👨‍✈️ Available Guides
           </h2>
 
-          {isLoading && (
-            <p className="text-gray-500 dark:text-gray-400">Loading guides...</p>
-          )}
-
-          {isError && (
-            <p className="text-red-500 dark:text-red-400">Error: {error.message}</p>
-          )}
-
+          {isLoading && <p className="text-gray-500 dark:text-gray-400">Loading guides...</p>}
+          {isError && <p className="text-red-500 dark:text-red-400">Error: {error.message}</p>}
           {!isLoading && guides.length === 0 && (
             <p className="text-gray-500 dark:text-gray-400">No guides found.</p>
           )}
@@ -87,6 +97,7 @@ const ChatHome = () => {
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );

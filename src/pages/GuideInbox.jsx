@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { getRoomId } from "../utils/getRoomId";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const GuideInbox = () => {
   const { user } = useContext(AuthContext);
@@ -24,29 +25,45 @@ const GuideInbox = () => {
     },
   });
 
-  // console.log(conversations);
-
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 text-black dark:text-white p-6 md:flex md:space-x-6">
+    <div className="min-h-screen pt-20 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 text-black dark:text-white p-4 md:flex md:space-x-6">
       
       {/* Chat Window */}
-      <div className="w-full md:w-2/3 mt-6 md:mt-0">
+      <div
+        className={`w-full md:w-2/3 mt-6 md:mt-0 ${
+          selectedUser ? "block" : "hidden md:block"
+        }`}
+      >
         {selectedUser ? (
-          <ChatBox
-            roomId={getRoomId(user?.email, selectedUser.email)}
-            receiver={selectedUser.email}
-          />
+          <div className="relative">
+            {/* Back button for mobile */}
+            <button
+              onClick={() => setSelectedUser(null)}
+              className="md:hidden absolute top-2 right-2 z-10 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-full shadow"
+            >
+              <ArrowRight size={20} />
+            </button>
+
+            <ChatBox
+              roomId={getRoomId(user?.email, selectedUser.email)}
+              receiver={selectedUser.email}
+            />
+          </div>
         ) : (
           <div className="h-[80vh] flex items-center justify-center bg-white/70 dark:bg-gray-800/50 rounded-2xl shadow-xl backdrop-blur-sm">
-            <p className="text-gray-500 text-lg font-medium">
-              Select a user to start the conversation 💬
+            <p className="text-gray-500 text-lg font-medium text-center px-6">
+              Select a user from the inbox to start chatting 💬
             </p>
           </div>
         )}
       </div>
 
       {/* Inbox Sidebar */}
-      <div className="w-full md:w-1/3 bg-white/80 dark:bg-white/10 border dark:border-gray-700 backdrop-blur-md shadow-xl rounded-2xl p-5 h-[80vh] overflow-y-auto">
+      <div
+        className={`w-full md:w-1/3 ${
+          selectedUser ? "hidden md:block" : "block"
+        } bg-white/80 dark:bg-white/10 border dark:border-gray-700 backdrop-blur-md shadow-xl rounded-2xl p-5 h-[80vh] overflow-y-auto`}
+      >
         <h2 className="text-2xl font-semibold mb-4">📥 Guide Inbox</h2>
 
         {isLoading && <p className="text-gray-500">Loading conversations...</p>}
@@ -67,9 +84,10 @@ const GuideInbox = () => {
               }`}
             >
               <div>
-                {/* <img src={convo.photo} alt="" /> */}
                 <p className="font-semibold">{convo.name}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{convo.email}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {convo.email}
+                </p>
               </div>
               <span className="text-xl">💬</span>
             </div>

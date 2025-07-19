@@ -1,18 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import socket from "../utils/socket";
-import axios from "axios";
-import { AuthContext } from "./../context/AuthProvider";
+import { AuthContext } from "../context/AuthProvider";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const ChatBox = ({ roomId, receiver }) => {
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
   const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+
+  const messagesContainerRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-    const axiosSecure = useAxiosSecure();
-
-
+  // ✅ Join room and load chat history
   useEffect(() => {
     if (!roomId) return;
 
@@ -20,11 +20,7 @@ const ChatBox = ({ roomId, receiver }) => {
 
     const fetchHistory = async () => {
       try {
-        const res = await axiosSecure.get(`/messages/${roomId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access-token")}`,
-          },
-        });
+        const res = await axiosSecure.get(`/messages/${roomId}`);
         setMessages(res.data);
       } catch (err) {
         console.error("❌ Failed to load messages:", err);
@@ -42,8 +38,12 @@ const ChatBox = ({ roomId, receiver }) => {
     };
   }, [roomId]);
 
+  // ✅ Smooth scroll to bottom ONLY within chat box
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   const handleSend = async () => {
@@ -60,23 +60,30 @@ const ChatBox = ({ roomId, receiver }) => {
     socket.emit("send-message", message);
     setNewMsg("");
 
-    await axiosSecure.post(`/messages`, message, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    });
+    try {
+      await axiosSecure.post(`/messages`, message);
+    } catch (err) {
+      console.error("❌ Failed to send message:", err);
+    }
   };
 
+  console.log(receiver);
+
   return (
-    <div className="fixed bottom-2 z-50 left-2 w-full max-w-sm bg-white dark:bg-gray-900 shadow-2xl rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col">
+    <div className="w-full h-[80vh] md:h-[70vh] flex flex-col bg-white dark:bg-gray-900 shadow-2xl rounded-xl border border-gray-300 dark:border-gray-700 overflow-hidden">
+      
       {/* Header */}
-      <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl flex justify-between items-center">
-        <h3 className="font-semibold text-lg">💬 Chat with {receiver}</h3>
-        {/* You can add a close (X) button here later */}
+      <div className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
+        <h3 className="font-semibold text-lg truncate">
+          💬 Chat with {receiver}
+        </h3>
       </div>
 
-      {/* Chat Messages */}
-      <div className="p-3 h-80 overflow-y-auto space-y-2 bg-gray-50 dark:bg-gray-800">
+      {/* Messages */}
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto px-3 py-4 bg-gray-50 dark:bg-gray-800 space-y-3 scroll-smooth"
+      >
         {messages.map((msg, idx) => {
           const isMe = msg.sender === user?.email;
           return (
@@ -85,7 +92,7 @@ const ChatBox = ({ roomId, receiver }) => {
               className={`flex ${isMe ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-xs p-3 rounded-2xl text-sm ${
+                className={`max-w-[80%] md:max-w-xs p-3 rounded-2xl text-sm break-words ${
                   isMe
                     ? "bg-blue-500 text-white rounded-br-none"
                     : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white rounded-bl-none"
@@ -105,8 +112,8 @@ const ChatBox = ({ roomId, receiver }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Field */}
-      <div className="flex items-center border-t border-gray-200 dark:border-gray-700 px-3 py-2">
+      {/* Input */}
+      <div className="flex items-center gap-2 border-t border-gray-200 dark:border-gray-700 px-4 py-3 bg-white dark:bg-gray-900">
         <input
           value={newMsg}
           onChange={(e) => setNewMsg(e.target.value)}
@@ -121,7 +128,7 @@ const ChatBox = ({ roomId, receiver }) => {
         />
         <button
           onClick={handleSend}
-          className="ml-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm"
         >
           Send
         </button>
