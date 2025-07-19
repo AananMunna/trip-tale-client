@@ -93,6 +93,9 @@ const handleRegister = async (e) => {
 
 try {
   const userCredential = await register(email, password);
+      const user = userCredential.user;
+
+  console.log(user);
 
   await updateProfile(userCredential.user, {
     displayName: name,
@@ -108,11 +111,8 @@ try {
   };
 
       // ✅ Save to MongoDB
-    await saveUserToDB({
-      ...userCredential.user,
-      displayName: name,
-      photoURL: uploadedImageURL,
-    });
+    await saveUserToDB(user);
+    console.log(user);
 
   // ✅ Now get JWT
   axiosSecure.post("/jwt", { email: newUser.email, role: newUser.role }).then((res) => {
@@ -157,6 +157,7 @@ const handleGoogleLogin = async () => {
 
     // ✅ Save to MongoDB
     await saveUserToDB(user);
+    console.log(user);
 
     axiosSecure.post("/jwt", { email: user.email, role: user.role }).then((res) => {
   localStorage.setItem("token", res.data.token);

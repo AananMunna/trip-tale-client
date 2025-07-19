@@ -53,7 +53,7 @@ const GuideInbox = () => {
         {selectedUser ? (
           <ChatBox
             roomId={getRoomId(user?.email, selectedUser.email)}
-            receiver={selectedUser.email}
+            receiver={selectedUser}
           />
         ) : (
           <div className="h-[80vh] flex items-center justify-center bg-white/70 dark:bg-gray-800/50 rounded-2xl shadow-lg backdrop-blur">

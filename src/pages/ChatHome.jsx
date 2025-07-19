@@ -55,9 +55,9 @@ const ChatHome = () => {
         <div className="col-span-2 bg-white/90 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-5 min-h-[60vh] flex items-center justify-center relative">
           {selectedGuide ? (
             <ChatBox
-              roomId={getRoomId(user?.email, selectedGuide.email)}
-              receiver={selectedGuide.email}
-            />
+  roomId={getRoomId(user?.email, selectedGuide.email)}
+  receiver={selectedGuide}
+/>
           ) : (
             <div className="text-center">
               <h3 className="text-lg text-gray-600 dark:text-gray-400">
