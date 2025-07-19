@@ -17,7 +17,7 @@ export default function Navbar() {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user,userRole } = useContext(AuthContext);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -78,6 +78,9 @@ export default function Navbar() {
           </motion.span>
           TripTale
         </Link>
+        
+
+
 
         {/* Desktop Links */}
         <div className="hidden lg:flex gap-6 items-center">
@@ -101,6 +104,16 @@ export default function Navbar() {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
+          {userRole === 'tourist' && (
+  <Link to="/chat" className="text-white bg-indigo-600 px-3 py-1 rounded">
+    💬 Chat
+  </Link>
+)}
+{userRole === 'guide' && (
+  <Link to="/guide-inbox" className="text-white bg-green-600 px-3 py-1 rounded">
+    📥 Inbox
+  </Link>
+)}
           <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
           {user ? (
             <ProfileDropdown user={user} />

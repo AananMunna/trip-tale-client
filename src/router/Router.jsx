@@ -31,6 +31,8 @@ import GuideProfile from "../components/GuideProfile";
 import PrivateRoute from './../components/PrivateRoute';
 import AllPackages from "../pages/admin/AllPackages";
 import EditPackage from "../pages/admin/EditPackage";
+import ChatHome from "../pages/ChatHome";
+import GuideInbox from "../pages/GuideInbox";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +48,17 @@ export const router = createBrowserRouter([
       { path: "login", Component: Login },
       { path: "register", Component: Register },
       { path: "*", Component: NotFound },
+      // ✨ For Tourist: Chat with guides
+      {
+        path: "chat", // http://localhost:5173/chat
+        element: <ChatHome />,
+      },
+
+      // ✨ For Guide: Inbox from tourists
+      {
+        path: "guide-inbox", // http://localhost:5173/guide-inbox
+        element: <GuideInbox />,
+      },
     ],
   },
 {
@@ -60,6 +73,7 @@ export const router = createBrowserRouter([
     { path: "dashboardHome", element: <UserDashboardHome /> },
     { path: "payment/:id", element: <Payment /> },
     { path: "add-story", element: <AddStory /> },
+     
     {
       path: "manage-stories",
       element: <ManageStories />,

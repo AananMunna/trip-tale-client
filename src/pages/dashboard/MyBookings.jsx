@@ -7,6 +7,7 @@ import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { AuthContext } from "../../context/AuthProvider";
+import ChatBox from "../../components/ChatBox";
 
 const MyBookings = () => {
   const axiosSecure = useAxiosSecure();
@@ -57,6 +58,17 @@ const MyBookings = () => {
     }
   };
 
+
+  // const [bookingId, setBookingId] = useState("")
+  // const [guideEmail, setGuideEmail] = useState("")
+  // const [visibleChat, setVisibleChat] = useState(false)
+
+  // const handleChat = (bookingId,bookingTourGuide) => {
+  //   setBookingId(bookingId);
+  //   setGuideEmail(bookingTourGuide)
+  //   setVisibleChat(true)
+  // }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
       {showConfetti && <Confetti width={width} height={height} />}
@@ -64,6 +76,9 @@ const MyBookings = () => {
       <h2 className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 text-center mb-8">
         🧳 My Bookings
       </h2>
+      {/* {bookings.map(booking => <ChatBox
+           roomId={booking._id} receiver={booking.tourGuide} 
+           />)} */}
 
       {isLoading ? (
         <div className="min-h-[300px] flex items-center justify-center">
@@ -140,6 +155,14 @@ const MyBookings = () => {
                         <Trash2 className="w-4 h-4" />
                         Cancel
                       </button>
+                      <button className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-4 rounded-lg inline-flex items-center justify-center gap-2">
+                        {" "}
+                        hihjhhj{" "}
+                        <ChatBox
+                          roomId={booking._id}
+                          receiver={booking.tourGuide}
+                        />
+                      </button>
                     </>
                   )}
                 </div>
@@ -152,7 +175,9 @@ const MyBookings = () => {
             <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
               <thead className="bg-gray-100 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-semibold">Package</th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold">
+                    Package
+                  </th>
                   <th className="px-4 py-2 text-sm">Tour Date</th>
                   <th className="px-4 py-2 text-sm">Price</th>
                   <th className="px-4 py-2 text-sm">Guide</th>
@@ -162,7 +187,10 @@ const MyBookings = () => {
               </thead>
               <tbody>
                 {bookings.map((booking) => (
-                  <tr key={booking._id} className="border-t dark:border-gray-700">
+                  <tr
+                    key={booking._id}
+                    className="border-t dark:border-gray-700"
+                  >
                     <td className="px-4 py-3 font-medium text-gray-800 dark:text-white">
                       {booking.packageTitle}
                     </td>
@@ -206,11 +234,14 @@ const MyBookings = () => {
                         </>
                       )}
                     </td>
+                    
                   </tr>
+                  
                 ))}
               </tbody>
             </table>
           </div>
+          
         </>
       )}
     </div>
