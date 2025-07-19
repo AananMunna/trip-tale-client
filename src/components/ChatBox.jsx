@@ -66,20 +66,10 @@ const ChatBox = ({ roomId, receiver }) => {
   return (
     <div className="fixed z-50 bottom-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-2xl rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col">
       {/* Header */}
-     <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl flex items-center gap-3">
-  <img
-    src={`https://i.pravatar.cc/150?u=${receiver.email}`}
-    
-    alt={receiver.name}
-    className="w-8 h-8 rounded-full border-2 border-white"
-  />
-  {console.log(receiver)}
-  <div>
-    <h3 className="font-semibold text-lg">{receiver.name}</h3>
-    <p className="text-sm opacity-80">{receiver.email}</p>
-  </div>
-</div>
-
+      <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl flex justify-between items-center">
+        <h3 className="font-semibold text-lg">💬 Chat with {receiver}</h3>
+        {/* You can add a close (X) button here later */}
+      </div>
 
       {/* Chat Messages */}
       <div className="p-3 h-80 overflow-y-auto space-y-2 bg-gray-50 dark:bg-gray-800">
