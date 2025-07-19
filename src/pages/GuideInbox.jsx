@@ -3,15 +3,18 @@ import axios from "axios";
 import ChatBox from "../components/ChatBox";
 import { AuthContext } from "../context/AuthProvider";
 import { getRoomId } from "../utils/getRoomId";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const GuideInbox = () => {
   const { user } = useContext(AuthContext);
   const [conversations, setConversations] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+    const axiosSecure = useAxiosSecure();
+
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/messages/inbox/${user?.email}`)
+    axiosSecure
+      .get(`/messages/inbox/${user?.email}`)
       .then((res) => {
         setConversations(res.data);
       });
@@ -19,6 +22,21 @@ const GuideInbox = () => {
 
   return (
     <div className="min-h-screen pt-20 bg-gradient-to-br from-gray-100 via-white to-gray-200 dark:from-gray-900 dark:to-gray-800 text-black dark:text-white p-6 md:flex md:space-x-6">
+      
+
+      {/* Chat Window */}
+      <div className="w-full md:w-2/3 mt-6 md:mt-0">
+        {selectedUser ? (
+          <ChatBox
+            roomId={getRoomId(user?.email, selectedUser.email)}
+            receiver={selectedUser.email}
+          />
+        ) : (
+          <div className="h-[80vh] flex items-center justify-center bg-white/70 dark:bg-gray-800/50 rounded-2xl shadow-lg backdrop-blur">
+            <p className="text-gray-500 text-lg">Select a user to chat with 💬</p>
+          </div>
+        )}
+      </div>
       {/* Left Sidebar */}
       <div className="w-full  md:w-1/3 bg-white/80 dark:bg-gray-800/60 backdrop-blur-md shadow-xl rounded-2xl p-4 h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-semibold mb-4">📥 Guide Inbox</h2>
@@ -46,20 +64,6 @@ const GuideInbox = () => {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Chat Window */}
-      <div className="w-full md:w-2/3 mt-6 md:mt-0">
-        {selectedUser ? (
-          <ChatBox
-            roomId={getRoomId(user?.email, selectedUser.email)}
-            receiver={selectedUser.email}
-          />
-        ) : (
-          <div className="h-[80vh] flex items-center justify-center bg-white/70 dark:bg-gray-800/50 rounded-2xl shadow-lg backdrop-blur">
-            <p className="text-gray-500 text-lg">Select a user to chat with 💬</p>
-          </div>
-        )}
       </div>
     </div>
   );

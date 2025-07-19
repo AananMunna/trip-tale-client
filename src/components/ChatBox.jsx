@@ -2,12 +2,16 @@ import { useContext, useEffect, useRef, useState } from "react";
 import socket from "../utils/socket";
 import axios from "axios";
 import { AuthContext } from "./../context/AuthProvider";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const ChatBox = ({ roomId, receiver }) => {
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
   const { user } = useContext(AuthContext);
   const messagesEndRef = useRef(null);
+
+    const axiosSecure = useAxiosSecure();
+
 
   useEffect(() => {
     if (!roomId) return;
@@ -16,7 +20,7 @@ const ChatBox = ({ roomId, receiver }) => {
 
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/messages/${roomId}`, {
+        const res = await axiosSecure.get(`/messages/${roomId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access-token")}`,
           },
@@ -56,7 +60,7 @@ const ChatBox = ({ roomId, receiver }) => {
     socket.emit("send-message", message);
     setNewMsg("");
 
-    await axios.post(`http://localhost:3000/messages`, message, {
+    await axiosSecure.post(`/messages`, message, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access-token")}`,
       },
@@ -64,7 +68,7 @@ const ChatBox = ({ roomId, receiver }) => {
   };
 
   return (
-    <div className="fixed z-50 bottom-0 right-0 w-full max-w-sm bg-white dark:bg-gray-900 shadow-2xl rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col">
+    <div className="fixed bottom-2 z-50 left-2 w-full max-w-sm bg-white dark:bg-gray-900 shadow-2xl rounded-xl border border-gray-300 dark:border-gray-700 flex flex-col">
       {/* Header */}
       <div className="bg-blue-600 text-white px-4 py-3 rounded-t-xl flex justify-between items-center">
         <h3 className="font-semibold text-lg">💬 Chat with {receiver}</h3>

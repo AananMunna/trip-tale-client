@@ -3,14 +3,17 @@ import axios from "axios";
 import ChatBox from "../components/ChatBox";
 import { AuthContext } from "../context/AuthProvider";
 import { getRoomId } from "../utils/getRoomId";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const ChatHome = () => {
   const { user } = useContext(AuthContext);
   const [guides, setGuides] = useState([]);
   const [selectedGuide, setSelectedGuide] = useState(null);
+    const axiosSecure = useAxiosSecure();
+
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/users?role=guide`).then((res) => {
+    axiosSecure.get(`/users?role=guide`).then((res) => {
       setGuides(res.data);
     });
   }, []);
@@ -18,7 +21,24 @@ const ChatHome = () => {
   return (
     <div className="min-h-[calc(100vh-80px)] p-4 md:p-8 bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 transition-all duration-300">
       <div className="max-w-6xl mt-10 mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Sidebar with Guide List */}
+       
+
+        {/* ChatBox UI */}
+        <div className="col-span-2 bg-white/90 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-5 min-h-[60vh] flex items-center justify-center relative">
+          {selectedGuide ? (
+            <ChatBox
+              roomId={getRoomId(user?.email, selectedGuide.email)}
+              receiver={selectedGuide.email}
+            />
+          ) : (
+            <div className="text-center">
+              <h3 className="text-lg text-gray-600 dark:text-gray-400">
+                Select a guide from the right to start chatting 💬
+              </h3>
+            </div>
+          )}
+        </div>
+         {/* Sidebar with Guide List */}
         <div className="col-span-1 bg-white/80 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-5 overflow-y-auto max-h-[80vh]">
           <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
             👨‍✈️ Available Guides
@@ -48,22 +68,6 @@ const ChatHome = () => {
                 </div>
               </div>
             ))
-          )}
-        </div>
-
-        {/* ChatBox UI */}
-        <div className="col-span-2 bg-white/90 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-5 min-h-[60vh] flex items-center justify-center relative">
-          {selectedGuide ? (
-            <ChatBox
-              roomId={getRoomId(user?.email, selectedGuide.email)}
-              receiver={selectedGuide.email}
-            />
-          ) : (
-            <div className="text-center">
-              <h3 className="text-lg text-gray-600 dark:text-gray-400">
-                Select a guide from the left to start chatting 💬
-              </h3>
-            </div>
           )}
         </div>
       </div>
