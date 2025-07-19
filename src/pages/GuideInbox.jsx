@@ -24,6 +24,8 @@ const GuideInbox = () => {
     },
   });
 
+  // console.log(conversations);
+
   return (
     <div className="min-h-screen pt-20 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 text-black dark:text-white p-6 md:flex md:space-x-6">
       
@@ -65,6 +67,7 @@ const GuideInbox = () => {
               }`}
             >
               <div>
+                {/* <img src={convo.photo} alt="" /> */}
                 <p className="font-semibold">{convo.name}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">{convo.email}</p>
               </div>

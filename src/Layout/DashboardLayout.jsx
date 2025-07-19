@@ -41,6 +41,8 @@ const DashboardLayout = () => {
     { path: "/dashboard/all-packages", label: "All Package", icon: <Package className="w-5 h-5" />, allowedRoles: ["admin"] },
     { path: "/dashboard/manage-users", label: "Manage Users", icon: <Users2 className="w-5 h-5" />, allowedRoles: ["admin"] },
     { path: "/dashboard/manage-candidates", label: "Manage Candidates", icon: <UserPlus2 className="w-5 h-5" />, allowedRoles: ["admin"] },
+    { path: "/dashboard/chat-guide", label: "Chat", icon: <UserPlus2 className="w-5 h-5" />, allowedRoles: ["guide"] },
+    { path: "/dashboard/chat-tourist", label: "Chat", icon: <UserPlus2 className="w-5 h-5" />, allowedRoles: ["tourist"] },
   ];
 
   // Swipe from anywhere on screen to open drawer from right (swipe left)

@@ -109,11 +109,11 @@ export default function Navbar() {
     💬 Chat
   </Link>
 )}
-{userRole === 'guide' && (
+{/* {userRole === 'guide' && (
   <Link to="/guide-inbox" className="text-white bg-green-600 px-3 py-1 rounded">
     📥 Inbox
   </Link>
-)}
+)} */}
           <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
           {user ? (
             <ProfileDropdown user={user} />

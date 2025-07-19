@@ -23,6 +23,8 @@ const ChatHome = () => {
     },
   });
 
+  console.log(selectedGuide);
+
   return (
     <div className="min-h-[calc(100vh-80px)] px-4 md:px-8 py-10 bg-gradient-to-br from-[#f8f9fa] via-white to-[#e9ecef] dark:from-gray-900 dark:to-gray-800 transition-all duration-300 pt-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -73,7 +75,7 @@ const ChatHome = () => {
                 }`}
               >
                 <img
-                  src={`https://i.pravatar.cc/150?u=${guide.email}`}
+                  src={guide?.photo}
                   alt={guide.name}
                   className="w-12 h-12 rounded-full border border-gray-300 dark:border-gray-600 shadow-sm"
                 />

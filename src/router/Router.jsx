@@ -49,16 +49,16 @@ export const router = createBrowserRouter([
       { path: "register", Component: Register },
       { path: "*", Component: NotFound },
       // ✨ For Tourist: Chat with guides
-      {
-        path: "chat", // http://localhost:5173/chat
-        element: <ChatHome />,
-      },
+      // {
+      //   path: "chat", // http://localhost:5173/chat
+      //   element: <ChatHome />,
+      // },
 
-      // ✨ For Guide: Inbox from tourists
-      {
-        path: "guide-inbox", // http://localhost:5173/guide-inbox
-        element: <GuideInbox />,
-      },
+      // // ✨ For Guide: Inbox from tourists
+      // {
+      //   path: "guide-inbox", // http://localhost:5173/guide-inbox
+      //   element: <GuideInbox />,
+      // },
     ],
   },
 {
@@ -151,6 +151,22 @@ export const router = createBrowserRouter([
       element: (
         <ProtectedRoute allowedRoles={["admin"]}>
           <ManageTourGuideCandidates />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "chat-guide",
+      element: (
+        <ProtectedRoute allowedRoles={[ "guide"]}>
+          <GuideInbox />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "chat-tourist",
+      element: (
+        <ProtectedRoute allowedRoles={[ "tourist"]}>
+          <ChatHome />
         </ProtectedRoute>
       ),
     },
