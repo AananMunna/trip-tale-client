@@ -104,11 +104,11 @@ export default function Navbar() {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-          {userRole === 'tourist' && (
+          {/* {userRole === 'tourist' && (
   <Link to="/chat" className="text-white bg-indigo-600 px-3 py-1 rounded">
     💬 Chat
   </Link>
-)}
+)} */}
 {/* {userRole === 'guide' && (
   <Link to="/guide-inbox" className="text-white bg-green-600 px-3 py-1 rounded">
     📥 Inbox
