@@ -157,30 +157,45 @@ Reply in a friendly, helpful tone.
           </button>
         </div>
 
+
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
-          <AnimatePresence>
-            {messages
-              .filter((msg) => msg.role !== "system")
-              .map((msg, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
-                  className={`p-3 text-sm md:text-base rounded-2xl max-w-[90%] whitespace-pre-wrap ${
-                    msg.role === "user"
-                      ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
-                      : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
-                  }`}
-                >
-                  {parseMessageWithLinks(msg.content)}
-                </motion.div>
-              ))}
-          </AnimatePresence>
-          <div ref={chatEndRef} />
-        </div>
+       {/* Messages */}
+<div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
+  <AnimatePresence>
+    {messages.filter((msg) => msg.role !== "system").length === 0 ? (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3 }}
+        className="bg-emerald-100 dark:bg-emerald-800 text-gray-800 dark:text-white p-4 rounded-xl text-center font-medium shadow-md"
+      >
+        👋 Find your dream trip with AI! Just tell me what you're looking for 🌴
+      </motion.div>
+    ) : (
+      messages
+        .filter((msg) => msg.role !== "system")
+        .map((msg, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className={`p-3 text-sm md:text-base rounded-2xl max-w-[90%] whitespace-pre-wrap ${
+              msg.role === "user"
+                ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
+                : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
+            }`}
+          >
+            {parseMessageWithLinks(msg.content)}
+          </motion.div>
+        ))
+    )}
+  </AnimatePresence>
+  <div ref={chatEndRef} />
+</div>
+
 
         {/* Input */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
