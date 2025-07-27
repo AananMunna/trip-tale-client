@@ -33,6 +33,7 @@ import AllPackages from "../pages/admin/AllPackages";
 import EditPackage from "../pages/admin/EditPackage";
 import ChatHome from "../pages/ChatHome";
 import GuideInbox from "../pages/GuideInbox";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       { path: "aboutUs", Component: AboutUs },
       { path: "all-trips", Component: TripPage },
       { path: "login", Component: Login },
+      {
+  path: "/forgot-password",
+  element: <ForgotPassword />,
+},
       { path: "register", Component: Register },
       { path: "*", Component: NotFound },
       // ✨ For Tourist: Chat with guides

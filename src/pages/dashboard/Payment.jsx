@@ -79,7 +79,13 @@ const Payment = () => {
       await axiosSecure.post("/payment-history", paymentRecord);
       await axiosSecure.patch(`/bookings/${id}`, { status: "in-review" });
 
-      Swal.fire("Payment Successful", "Your tour is confirmed!", "success");
+Swal.fire({
+  icon: "success",
+  title: "Payment Successful",
+  text: "Your tour is confirmed!",
+  confirmButtonColor: "#009966", // Your theme button color
+  confirmButtonText: "Awesome!",
+});
       navigate('/dashboard/payment-history')
     } else {
       Swal.fire("Payment Incomplete", "Something went wrong", "error");

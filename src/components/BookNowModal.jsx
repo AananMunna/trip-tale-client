@@ -42,23 +42,30 @@ const BookNowModal = ({ isOpen, closeModal, packageData }) => {
       createdAt: new Date().toISOString(),
     };
 
-    try {
-      const res = await axiosSecure.post("/bookings", bookingInfo);
-      if (res.data.insertedId) {
-        Swal.fire({
-          icon: "success",
-          title: "Confirm your Booking",
-          text: "Your booking is now pending. Check 'My Bookings' page.",
-          confirmButtonText: "Go to My Bookings",
-        }).then(() => {
-          closeModal();
-          navigate("/dashboard/my-bookings");
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Booking failed", err.message, "error");
-    }
+try {
+  const res = await axiosSecure.post("/bookings", bookingInfo);
+  if (res.data.insertedId) {
+    Swal.fire({
+      icon: "success",
+      title: "Confirm your Booking",
+      text: "Your booking is now pending. Check 'My Bookings' page.",
+      confirmButtonText: "Go to My Bookings",
+      confirmButtonColor: "#009966", // Your main theme button color
+    }).then(() => {
+      closeModal();
+      navigate("/dashboard/my-bookings");
+    });
+  }
+} catch (err) {
+  console.error(err);
+  Swal.fire({
+    icon: "error",
+    title: "Booking failed",
+    text: err.message,
+    confirmButtonColor: "#009966", // Optional: match error alert button too
+  });
+}
+
   };
 
   return (

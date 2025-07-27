@@ -122,6 +122,12 @@ const Login = () => {
               Register
             </Link>
           </p>
+          <p className="text-sm mt-2 text-center">
+  <Link to="/forgot-password" className="text-blue-500 hover:underline">
+    Forgot your password?
+  </Link>
+</p>
+
         </form>
       </motion.div>
     </div>
