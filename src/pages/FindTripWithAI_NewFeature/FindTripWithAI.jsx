@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaPaperPlane, FaTimes, FaUserAstronaut } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im"; // spinner
 
-
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
 
@@ -38,7 +37,7 @@ const FindTripWithAI = () => {
       const tripsRes = await axiosSecure.get("/packages");
       const trips = tripsRes.data;
 
-const prompt = `
+      const prompt = `
 You're a friendly travel guide helping tourists find the perfect trip from a list of available packages.
 
 Here are the available trips with all the details:
@@ -71,7 +70,6 @@ Keep your tone super friendly, helpful, and human—like a real tour guide would
 
 Ready? Go! ✈️
 `;
-
 
       const geminiRes = await axios.post(
         "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
@@ -155,18 +153,22 @@ Ready? Go! ✈️
         }`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-emerald-600 text-white rounded-t-xl">
-          <h2 className="text-lg font-bold">🌴 Trip AI Assistant</h2>
-        <button
-  onClick={() => setIsOpen(false)}
-  className="w-9 h-9 flex items-center justify-center text-white font-bold text-xl leading-none 
-             hover:bg-white hover:text-emerald-600 transition-all duration-200 ease-in-out 
-             rounded-full focus:outline-none focus:ring-2 focus:ring-white"
-  aria-label="Close AI Chat"
->
-  &times;
-</button>
+        {/* Header */}
+        <div className="p-5 flex justify-between items-center bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 rounded-t-xl shadow-lg border-b border-emerald-800">
+          <h2 className="text-xl font-extrabold tracking-wide drop-shadow-md select-none flex items-center gap-2">
+            <span className="text-yellow-300 text-2xl">🌴</span>
+            Trip AI Assistant
+          </h2>
 
+          <button
+            onClick={() => setIsOpen(false)}
+            className="w-10 h-10 flex items-center justify-center text-emerald-100 hover:text-emerald-700 hover:bg-white transition-colors duration-300 rounded-full shadow-md focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50"
+            aria-label="Close AI Chat"
+          >
+            <span className="text-2xl font-bold leading-none select-none">
+              &times;
+            </span>
+          </button>
         </div>
 
         {/* Messages */}
@@ -219,28 +221,28 @@ Ready? Go! ✈️
             onKeyDown={handleKeyDown}
             disabled={loading}
           />
-         
-<button
-  onClick={handleSend}
-  disabled={loading || !input.trim()}
-  className={`px-4 py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
-    loading
-      ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
-      : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
-  } hover:scale-105 active:scale-95`}
-  aria-label={loading ? "Thinking..." : "Send message"}
->
-  {loading ? (
-    <>
-    <span>Thinking... </span>
-    {/* <ImSpinner2 className="animate-spin text-xl" /> */}
-    </>
-  ) : (
-    <>
-      <span>Send</span> <FaPaperPlane className="text-xl" />
-    </>
-  )}
-</button>
+
+          <button
+            onClick={handleSend}
+            disabled={loading || !input.trim()}
+            className={`px-4 py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
+              loading
+                ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
+                : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+            } hover:scale-105 active:scale-95`}
+            aria-label={loading ? "Thinking..." : "Send message"}
+          >
+            {loading ? (
+              <>
+                <span>Thinking... </span>
+                {/* <ImSpinner2 className="animate-spin text-xl" /> */}
+              </>
+            ) : (
+              <>
+                <span>Send</span> <FaPaperPlane className="text-xl" />
+              </>
+            )}
+          </button>
         </div>
         <p className="text-center text-xs text-gray-400 dark:text-gray-500 mb-2">
           Powered by Gemini ✨
