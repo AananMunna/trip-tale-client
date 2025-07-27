@@ -112,6 +112,13 @@ const PackageDetails = () => {
           <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">৳{price}</span>
         </p>
       </div>
+       <motion.button
+      whileHover={{ scale: 1.1, backgroundColor: "#059669", transition: { duration: 0.3 } }}
+      onClick={handleBookNow}
+      className="px-6 py-3 bg-emerald-600 shadow-2xl text-white font-semibold rounded-full text-sm sm:text-base"
+    >
+      Book Now
+    </motion.button>
     </div>
 
     {/* 🚀 Tour Plan Timeline */}
@@ -135,24 +142,8 @@ const PackageDetails = () => {
     </div>
   </div>
 
-  {/* 📦 Sticky Premium Book Now Button */}
-  <motion.div
-    initial={{ scale: 1 }}
-    animate={{
-      scale: [1, 1.05, 1],
-      boxShadow: ["rgba(16,185,129,0.6)"],
-    }}
-    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-    className="fixed bottom-5 right-5 z-50"
-  >
-    <motion.button
-      whileHover={{ scale: 1.1, backgroundColor: "#059669", transition: { duration: 0.3 } }}
-      onClick={handleBookNow}
-      className="px-6 py-3 bg-emerald-600 shadow-2xl text-white font-semibold rounded-full text-sm sm:text-base"
-    >
-      Book Now
-    </motion.button>
-  </motion.div>
+
+   
 
   {/* 📦 Modal */}
   <BookNowModal isOpen={isBookModalOpen} closeModal={() => setIsBookModalOpen(false)} packageData={packageData} />
