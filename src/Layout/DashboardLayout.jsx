@@ -18,6 +18,7 @@ import {
 import { AuthContext } from "../context/AuthProvider";
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
+import FindTripWithAI from "../pages/FindTripWithAI_NewFeature/FindTripWithAI";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -110,6 +111,8 @@ const DashboardLayout = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
+            <FindTripWithAI />
+
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 fixed inset-y-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-20">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-700">

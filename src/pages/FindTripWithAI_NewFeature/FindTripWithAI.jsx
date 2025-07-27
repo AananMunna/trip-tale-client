@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-
+import { Link } from "react-router"; // fixed import
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
 
 const FindTripWithAI = () => {
   const axiosSecure = useAxiosSecure();
@@ -14,7 +15,7 @@ const FindTripWithAI = () => {
     },
   ]);
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // popup open/close
+  const [isOpen, setIsOpen] = useState(false);
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -27,7 +28,6 @@ const FindTripWithAI = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
     const userMessage = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
@@ -36,18 +36,18 @@ const FindTripWithAI = () => {
       const tripsRes = await axiosSecure.get("/packages");
       const trips = tripsRes.data;
 
-const prompt = `
+      const prompt = `
 Here are the available trips with details:
 
 ${trips
   .map(
-    (trip) => 
+    (trip) =>
 `Title: ${trip.title}
 Description: ${trip.description}
 Type: ${trip.tourType}
 Duration: ${trip.duration}
 Price: ${trip.price} BDT
-Link: http://localhost:5173/packages/${trip._id}
+Link: ${BASE_URL}/packages/${trip._id}
 
 `
   )
@@ -55,24 +55,19 @@ Link: http://localhost:5173/packages/${trip._id}
 
 User query: ${input}
 
-Based on the above trips, please suggest only the trips matching the user query (like by price, tour type, or duration). For each suggested trip, reply with:
+Based on the above trips, suggest only the matching trips (by price, tour type, duration). For each:
 - Title
 - Short Description
 - Price
-- Link (use the link provided)
+- Link (label as "View Trip Details")
 
 Reply in a friendly, helpful tone.
 `;
 
-
       const geminiRes = await axios.post(
         "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
         {
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
+          contents: [{ parts: [{ text: prompt }] }],
         },
         {
           headers: {
@@ -92,7 +87,10 @@ Reply in a friendly, helpful tone.
       console.error("❌ Gemini error:", error.response?.data || error.message);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Oops, something went wrong with Gemini." },
+        {
+          role: "assistant",
+          content: "Oops, something went wrong with Gemini.",
+        },
       ]);
     } finally {
       setLoading(false);
@@ -103,31 +101,50 @@ Reply in a friendly, helpful tone.
     if (e.key === "Enter") handleSend();
   };
 
+  const parseMessageWithLinks = (text) => {
+    const urlRegex = new RegExp(`(${BASE_URL}/packages/[a-z0-9]+)`, "g");
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (urlRegex.test(part)) {
+        const path = part.replace(BASE_URL, "");
+        return (
+          <Link
+            key={index}
+            to={path}
+            className="inline-block text-sm font-medium text-white bg-emerald-500 px-3 py-1 rounded-md hover:scale-105 transition hover:underline"
+          >
+            View Trip Details
+          </Link>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   return (
     <>
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed right-4 top-1/3 z-40 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-l-lg shadow-lg transition"
+        className="fixed right-4 top-1/3 z-40 px-4 py-2 bg-emerald-500 hover:bg-emerald-700 text-white rounded-l-lg shadow-lg transition"
         aria-label={isOpen ? "Close AI trip assistant" : "Open AI trip assistant"}
       >
         {isOpen ? "Close Trip AI" : "Open Trip AI"}
       </button>
 
-      {/* Sticky AI Chat Box */}
+      {/* Sticky Chat Box */}
       <div
         className={`fixed top-16 right-4 z-50 w-96 max-w-full h-[80vh] bg-white dark:bg-gray-800 shadow-2xl rounded-xl flex flex-col transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            ✈️ Find Your Trip with AI
-          </h2>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-emerald-500 text-white rounded-t-xl">
+          <h2 className="text-lg font-bold">✈️ Trip AI Assistant</h2>
           <button
             onClick={() => setIsOpen(false)}
-            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-bold text-2xl leading-none"
+            className="text-white font-bold text-xl leading-none"
             aria-label="Close chat"
           >
             &times;
@@ -135,19 +152,19 @@ Reply in a friendly, helpful tone.
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-700">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-700 rounded-b-xl">
           {messages
             .filter((msg) => msg.role !== "system")
             .map((msg, idx) => (
               <div
                 key={idx}
-                className={`p-3 text-sm md:text-base rounded-xl max-w-[85%] whitespace-pre-wrap transition-all ${
+                className={`p-3 text-sm md:text-base rounded-xl max-w-[90%] whitespace-pre-wrap ${
                   msg.role === "user"
-                    ? "bg-blue-100 dark:bg-blue-600 text-right self-end ml-auto text-gray-900 dark:text-white"
+                    ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
                     : "bg-green-100 dark:bg-green-600 text-left self-start mr-auto text-gray-900 dark:text-white"
                 }`}
               >
-                {msg.content}
+                {parseMessageWithLinks(msg.content)}
               </div>
             ))}
           <div ref={chatEndRef} />
@@ -158,7 +175,7 @@ Reply in a friendly, helpful tone.
           <input
             type="text"
             placeholder="e.g. Cox’s Bazar trip under 3K"
-            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -170,7 +187,7 @@ Reply in a friendly, helpful tone.
             className={`px-4 py-2 font-semibold rounded-lg text-white transition-all ${
               loading
                 ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-emerald-500 hover:bg-emerald-700"
             }`}
           >
             {loading ? "Thinking..." : "Send"}

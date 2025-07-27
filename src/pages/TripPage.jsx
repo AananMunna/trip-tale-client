@@ -3,7 +3,7 @@ import { Link } from "react-router"; // ✅ fixed import
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Compass, PlaneTakeoff } from "lucide-react";
-import FindTripWithAI from "./FindTripWithAI_NewFeature/FindTripWithAI";
+// import FindTripWithAI from "./FindTripWithAI_NewFeature/FindTripWithAI";
 
 const TripPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -54,7 +54,6 @@ const TripPage = () => {
       <h1 className="text-4xl font-extrabold text-center text-gray-800 dark:text-white mb-12 tracking-tight">
         Explore Our Top Trips
       </h1>
-      <FindTripWithAI />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {packages.map((pkg) => (
