@@ -3,7 +3,9 @@ import axios from "axios";
 import { Link } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaUserAstronaut } from "react-icons/fa";
+import { FaPaperPlane, FaTimes, FaUserAstronaut } from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im"; // spinner
+
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5173";
@@ -36,33 +38,40 @@ const FindTripWithAI = () => {
       const tripsRes = await axiosSecure.get("/packages");
       const trips = tripsRes.data;
 
-      const prompt = `
-Here are the available trips with details:
+const prompt = `
+You're a friendly travel guide helping tourists find the perfect trip from a list of available packages.
+
+Here are the available trips with all the details:
 
 ${trips
   .map(
     (trip) =>
-      `Title: ${trip.title}
-Description: ${trip.description}
-Type: ${trip.tourType}
-Duration: ${trip.duration}
-Price: ${trip.price} BDT
-Link: ${BASE_URL}/packages/${trip._id}
+      `🏞️ Title: ${trip.title}
+📝 Description: ${trip.description}
+🎯 Type: ${trip.tourType}
+⏳ Duration: ${trip.duration}
+💸 Price: ${trip.price} BDT
+🔗 Link: ${BASE_URL}/packages/${trip._id}
 
 `
   )
   .join("\n")}
 
-User query: ${input}
+Now, the user said: "${input}"
 
-Based on the above trips, suggest only the matching trips (by price, tour type, duration). For each:
-- Title
-- Short Description
-- Price
-- Link (label as "View Trip Details")
+Please suggest only the trips that match what they’re looking for based on price, tour type, or duration.
 
-Reply in a friendly, helpful tone.
+For each trip you suggest, include:
+- 🏷️ Title
+- ✨ One-line summary
+- 💰 Price
+- 🔎 A link labeled as **"View Trip Details"**
+
+Keep your tone super friendly, helpful, and human—like a real tour guide would speak. Make the response short and easy to scan. If nothing matches, politely suggest they try different keywords.
+
+Ready? Go! ✈️
 `;
+
 
       const geminiRes = await axios.post(
         "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
@@ -125,77 +134,79 @@ Reply in a friendly, helpful tone.
   return (
     <>
       {/* Toggle Button */}
-<button
-  onClick={() => setIsOpen(!isOpen)}
-  className="fixed bottom-6 left-6 z-50 p-4 bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-rose-500 
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 left-6 z-50 p-4 bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-rose-500 
              hover:from-purple-600 hover:via-fuchsia-600 hover:to-rose-600 text-white 
              rounded-full shadow-2xl transition-all duration-300 ease-in-out 
              hover:scale-110 hover:shadow-fuchsia-500/60 animate-bounce"
->
-  {isOpen ? (
-    <FaTimes className="text-2xl" />
-  ) : (
-    <FaUserAstronaut className="text-2xl" />
-  )}
-</button>
-
+      >
+        {isOpen ? (
+          <FaTimes className="text-2xl" />
+        ) : (
+          <FaUserAstronaut className="text-2xl" />
+        )}
+      </button>
 
       {/* Chat UI */}
       <div
-        className={`fixed top-16 lg:top-0 right-3 z-50 w-96 max-w-full h-[80vh] lg:h-[100vh] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 shadow-2xl rounded-xl flex flex-col transition-transform duration-500 ${
+        className={`fixed top-16 lg:top-0 right-3 z-[100] w-96 max-w-full h-[80vh] lg:h-[100vh] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 shadow-2xl rounded-xl flex flex-col transition-transform duration-500 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-emerald-600 text-white rounded-t-xl">
           <h2 className="text-lg font-bold">🌴 Trip AI Assistant</h2>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-white font-bold text-xl leading-none"
-          >
-            &times;
-          </button>
+        <button
+  onClick={() => setIsOpen(false)}
+  className="w-9 h-9 flex items-center justify-center text-white font-bold text-xl leading-none 
+             hover:bg-white hover:text-emerald-600 transition-all duration-200 ease-in-out 
+             rounded-full focus:outline-none focus:ring-2 focus:ring-white"
+  aria-label="Close AI Chat"
+>
+  &times;
+</button>
+
         </div>
 
-
         {/* Messages */}
-       {/* Messages */}
-<div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
-  <AnimatePresence>
-    {messages.filter((msg) => msg.role !== "system").length === 0 ? (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.3 }}
-        className="bg-emerald-100 dark:bg-emerald-800 text-gray-800 dark:text-white p-4 rounded-xl text-center font-medium shadow-md"
-      >
-        👋 Find your dream trip with AI! Just tell me what you're looking for 🌴
-      </motion.div>
-    ) : (
-      messages
-        .filter((msg) => msg.role !== "system")
-        .map((msg, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-            className={`p-3 text-sm md:text-base rounded-2xl max-w-[90%] whitespace-pre-wrap ${
-              msg.role === "user"
-                ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
-                : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
-            }`}
-          >
-            {parseMessageWithLinks(msg.content)}
-          </motion.div>
-        ))
-    )}
-  </AnimatePresence>
-  <div ref={chatEndRef} />
-</div>
-
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-800">
+          <AnimatePresence>
+            {messages.filter((msg) => msg.role !== "system").length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="bg-emerald-100 dark:bg-emerald-800 text-gray-800 dark:text-white p-4 rounded-xl text-center font-medium shadow-md"
+              >
+                👋 Find your dream trip with AI! Just tell me what you're
+                looking for 🌴
+              </motion.div>
+            ) : (
+              messages
+                .filter((msg) => msg.role !== "system")
+                .map((msg, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    className={`p-3 text-sm md:text-base rounded-2xl max-w-[90%] whitespace-pre-wrap ${
+                      msg.role === "user"
+                        ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
+                        : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
+                    }`}
+                  >
+                    {parseMessageWithLinks(msg.content)}
+                  </motion.div>
+                ))
+            )}
+          </AnimatePresence>
+          <div ref={chatEndRef} />
+        </div>
 
         {/* Input */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex gap-2">
@@ -208,17 +219,28 @@ Reply in a friendly, helpful tone.
             onKeyDown={handleKeyDown}
             disabled={loading}
           />
-          <button
-            onClick={handleSend}
-            disabled={loading || !input.trim()}
-            className={`px-4 py-2 font-semibold rounded-lg text-white transition-all ${
-              loading
-                ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
-                : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
-            }`}
-          >
-            {loading ? "Thinking..." : "Send"}
-          </button>
+         
+<button
+  onClick={handleSend}
+  disabled={loading || !input.trim()}
+  className={`px-4 py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
+    loading
+      ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
+      : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+  } hover:scale-105 active:scale-95`}
+  aria-label={loading ? "Thinking..." : "Send message"}
+>
+  {loading ? (
+    <>
+    <span>Thinking... </span>
+    {/* <ImSpinner2 className="animate-spin text-xl" /> */}
+    </>
+  ) : (
+    <>
+      <span>Send</span> <FaPaperPlane className="text-xl" />
+    </>
+  )}
+</button>
         </div>
         <p className="text-center text-xs text-gray-400 dark:text-gray-500 mb-2">
           Powered by Gemini ✨
