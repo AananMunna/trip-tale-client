@@ -34,6 +34,7 @@ import EditPackage from "../pages/admin/EditPackage";
 import ChatHome from "../pages/ChatHome";
 import GuideInbox from "../pages/GuideInbox";
 import ForgotPassword from "../pages/ForgotPassword";
+// import FindTripWithAI from "../pages/FindTripWithAI_NewFeature/FindTripWithAI";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
 },
       { path: "register", Component: Register },
       { path: "*", Component: NotFound },
+      // {path: '/find-trip-with-ai', Component: FindTripWithAI}
       // ✨ For Tourist: Chat with guides
       // {
       //   path: "chat", // http://localhost:5173/chat
