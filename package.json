@@ -37,6 +37,7 @@
     "react-select": "^5.10.2",
     "react-share": "^5.2.2",
     "react-simple-typewriter": "^5.0.1",
+    "react-spinners": "^0.17.0",
     "react-tabs": "^6.1.0",
     "react-tooltip": "^5.29.0",
     "react-use": "^17.6.0",

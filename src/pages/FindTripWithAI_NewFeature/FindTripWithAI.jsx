@@ -154,7 +154,7 @@ Ready? Go! ✈️
       >
         {/* Header */}
         {/* Header */}
-        <div className="p-5 flex justify-between items-center bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 rounded-t-xl shadow-lg border-b border-emerald-800">
+        <div className="p-3 flex justify-between items-center bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 rounded-t-xl shadow-lg border-b border-emerald-800">
           <h2 className="text-xl font-extrabold tracking-wide drop-shadow-md select-none flex items-center gap-2">
             <span className="text-yellow-300 text-2xl">🌴</span>
             Trip AI Assistant
@@ -191,19 +191,20 @@ Ready? Go! ✈️
                 .filter((msg) => msg.role !== "system")
                 .map((msg, idx) => (
                   <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.25 }}
-                    className={`p-3 text-sm md:text-base rounded-2xl max-w-[90%] whitespace-pre-wrap ${
-                      msg.role === "user"
-                        ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
-                        : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
-                    }`}
-                  >
-                    {parseMessageWithLinks(msg.content)}
-                  </motion.div>
+  key={idx}
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: -10 }}
+  transition={{ duration: 0.25 }}
+  className={`p-3 text-sm md:text-base rounded-2xl max-w-[80%] w-fit whitespace-pre-wrap break-words ${
+    msg.role === "user"
+      ? "bg-blue-100 dark:bg-emerald-500 text-right self-end ml-auto text-gray-900 dark:text-white"
+      : "bg-green-100 dark:bg-green-700 text-left self-start mr-auto text-gray-900 dark:text-white"
+  }`}
+>
+  {parseMessageWithLinks(msg.content)}
+</motion.div>
+
                 ))
             )}
           </AnimatePresence>
