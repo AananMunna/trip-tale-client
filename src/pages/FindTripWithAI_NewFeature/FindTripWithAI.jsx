@@ -134,8 +134,8 @@ Ready? Go! ✈️
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 p-4 bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-rose-500 
-             hover:from-purple-600 hover:via-fuchsia-600 hover:to-rose-600 text-white 
+        className="fixed bottom-6 left-6 z-50 p-4 bg-gradient-to-tr from-emerald-500 via-emerald-600 to-emerald-700 
+             hover:from-emerald-600 hover:via-emerald-400 hover:to-emerald-500 text-white 
              rounded-full shadow-2xl transition-all duration-300 ease-in-out 
              hover:scale-110 hover:shadow-fuchsia-500/60 animate-bounce"
       >
