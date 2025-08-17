@@ -10,13 +10,13 @@ import TouristStoriesSection from "./components/TouristStoriesSection";
 function App() {
   return (
     <div>
-      <AdventurePackages></AdventurePackages>
       <Hero></Hero>
       <OverviewSection></OverviewSection>
       <TourismAndGuideTabs></TourismAndGuideTabs>
       <TouristStoriesSection></TouristStoriesSection>
       <EcoFriendlyTips></EcoFriendlyTips>
       <CulinaryTrails></CulinaryTrails>
+      <AdventurePackages></AdventurePackages>
     </div>
   );
 }
