@@ -148,7 +148,7 @@ Ready? Go! ✈️
 
       {/* Chat UI */}
       <div
-        className={`fixed top-16 lg:top-0 right-3 z-[100] w-96 max-w-full h-[80vh] lg:h-[100vh] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 shadow-2xl rounded-xl flex flex-col transition-transform duration-500 ${
+        className={`fixed top-16 lg:top-0 right-0 z-[100] w-96 max-w-full h-[80vh] lg:h-[100vh] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 shadow-2xl rounded-xl flex flex-col transition-transform duration-500 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
