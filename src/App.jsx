@@ -2,6 +2,7 @@ import "./App.css";
 import AdventurePackages from "./components/AdventurePackages";
 import CulinaryTrails from "./components/CulinaryTrails";
 import EcoFriendlyTips from "./components/EcoFriendlyTips";
+import FAQSection from "./components/FAQSection";
 import Hero from "./components/Hero";
 import OverviewSection from "./components/OverviewSection";
 import TourismAndGuideTabs from "./components/TourismAndGuideTabs";
@@ -19,6 +20,7 @@ function App() {
       <TouristStoriesSection></TouristStoriesSection>
       <CulinaryTrails></CulinaryTrails>
       <TravelerReviews></TravelerReviews>
+      <FAQSection></FAQSection>
     </div>
   );
 }

@@ -35,12 +35,6 @@ const stats = [
   { label: "Journeys Planned", value: "1000+" },
 ];
 
-// Mini Gallery - Free & Directly Accessible
-const galleryImages = [
-  "https://i.ibb.co/JFc7ZFyV/md-akil-khan-q-o-Od-JIe-WY-unsplash-min.jpg", // Sylhet Tea Gardens
-  "https://i.ibb.co/YFSWW5Cy/salman-khalid-R2-RNxkbinrg-unsplash-min.jpg", // Cox's Bazar Beach
-  "https://i.ibb.co/dJrtKtZc/naoki-suzuki-e9-R-n-T52dw-M-unsplash-min.jpg", // Sundarbans Mangrove
-];
 
 
 export default function OverviewSection() {
@@ -91,18 +85,7 @@ export default function OverviewSection() {
           ))}
         </div>
 
-        {/* Mini Gallery */}
-        <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {galleryImages.map((img, i) => (
-            <div key={i} className="overflow-hidden rounded-xl shadow-lg">
-              <img
-                src={img}
-                alt={`Gallery ${i}`}
-                className="w-full h-40 object-cover transform transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
+      
       </div>
     </section>
   );

@@ -89,11 +89,11 @@ export default function TravelerReviews() {
                   </div>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300 line-clamp-4">{review.comment}</p>
-                <div className="text-right">
+                {/* <div className="text-right">
                   <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white">
                     Read More
                   </Button>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
           ))}
