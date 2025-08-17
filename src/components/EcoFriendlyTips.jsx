@@ -1,56 +1,92 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const tips = [
-  "Use refillable water bottles instead of plastic.",
-  "Respect wildlife and never feed or disturb them.",
-  "Stay in eco-certified accommodations.",
-  "Support local businesses and artisans.",
-  "Minimize waste, recycle where possible.",
-  "Walk or cycle to explore nearby places.",
+const ecoTips = [
+  { icon: "💧", title: "Refillable Water", desc: "Use refillable water bottles instead of plastic." },
+  { icon: "🌿", title: "Respect Wildlife", desc: "Never feed or disturb animals." },
+  { icon: "🏨", title: "Eco Accommodations", desc: "Stay in eco-certified hotels or homestays." },
+  { icon: "🛍️", title: "Support Locals", desc: "Buy from local artisans and businesses." },
+  { icon: "♻️", title: "Reduce Waste", desc: "Recycle and minimize disposable items." },
+  { icon: "🚶‍♂️", title: "Walk or Cycle", desc: "Explore nearby places on foot or by bike." },
 ];
 
-const EcoFriendlyTips = () => {
-  return (
-    <section className="max-w-7xl mx-auto px-6 py-20 bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-500">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="text-center text-4xl font-extrabold mb-14 tracking-tight text-gray-900 dark:text-white"
-      >
-        🌿 Eco-Friendly Travel Tips
-      </motion.h2>
+export default function EcoFriendlyTipsSection() {
+  const [checkedTips, setCheckedTips] = useState([]);
 
-      <motion.ul
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.1 } },
-        }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-      >
-        {tips.map((tip, idx) => (
-          <motion.li
-            key={idx}
-            variants={{
-              hidden: { opacity: 0, y: 15 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            className="flex items-start gap-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-shadow duration-300"
-          >
-            <span className="flex-shrink-0 mt-1 text-3xl text-green-500 dark:text-green-400 select-none">
-              ✅
-            </span>
-            <p className="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-              {tip}
-            </p>
-          </motion.li>
-        ))}
-      </motion.ul>
+  const toggleCheck = (index) => {
+    setCheckedTips((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  return (
+    <section className="max-w-7xl mx-auto px-6 py-20 mb-20 bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-500">
+      <h2 className="text-4xl font-extrabold text-center mb-12 tracking-tight text-gray-900 dark:text-white">
+        🌱 Eco-Friendly Travel Tips
+      </h2>
+
+      <Tabs defaultValue="timeline" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsTrigger value="slider">Slider</TabsTrigger>
+          <TabsTrigger value="accordion">Checklist</TabsTrigger>
+        </TabsList>
+
+        {/* Timeline Layout */}
+        <TabsContent value="timeline">
+          <div className="relative border-l-2 border-emerald-400 dark:border-emerald-600 ml-4 mt-6">
+            {ecoTips.map((tip, i) => (
+              <div key={i} className="mb-10 ml-6 relative">
+                <span className="absolute ml-1 -left-6 top-0 w-12 h-12 flex items-center justify-center rounded-full bg-emerald-500 text-white text-xl shadow-lg">
+                  {tip.icon}
+                </span>
+                <h3 className="text-lg font-semibold ml-10">{tip.title}</h3>
+                <p className="text-gray-700 dark:text-gray-300 ml-10">{tip.desc}</p>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Slider Layout */}
+        <TabsContent value="slider">
+          <div className="flex overflow-x-auto gap-6 mt-6 pb-4">
+            {ecoTips.map((tip, i) => (
+              <Card key={i} className="min-w-[250px] flex-shrink-0 hover:shadow-xl transition-shadow duration-300">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">{tip.icon}</div>
+                  <h3 className="font-semibold mb-2">{tip.title}</h3>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm">{tip.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Accordion Layout */}
+        <TabsContent value="accordion">
+          <Accordion type="multiple" className="space-y-4 mt-6">
+            {ecoTips.map((tip, i) => (
+              <AccordionItem key={i} value={`item-${i}`} className="border rounded-xl">
+                <AccordionTrigger className="flex justify-between items-center p-4 cursor-pointer">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{tip.icon}</span>
+                    <span>{tip.title}</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={checkedTips.includes(i)}
+                    onChange={() => toggleCheck(i)}
+                    className="w-5 h-5 text-emerald-500"
+                  />
+                </AccordionTrigger>
+                <AccordionContent className="p-4 text-gray-700 dark:text-gray-300">{tip.desc}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </TabsContent>
+      </Tabs>
     </section>
   );
-};
-
-export default EcoFriendlyTips;
+}
