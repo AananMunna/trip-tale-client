@@ -27,8 +27,8 @@ export default function EcoFriendlyTipsSection() {
         🌱 Eco-Friendly Travel Tips
       </h2>
 
-      <Tabs defaultValue="timeline" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="timeline" className="space-y-6 ">
+        <TabsList className="grid w-full grid-cols-3 dark:bg-gray-900/70">
           <TabsTrigger value="timeline">Timeline</TabsTrigger>
           <TabsTrigger value="slider">Slider</TabsTrigger>
           <TabsTrigger value="accordion">Checklist</TabsTrigger>
@@ -53,8 +53,8 @@ export default function EcoFriendlyTipsSection() {
         <TabsContent value="slider">
           <div className="flex overflow-x-auto gap-6 mt-6 pb-4">
             {ecoTips.map((tip, i) => (
-              <Card key={i} className="min-w-[250px] flex-shrink-0 hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
+              <Card key={i} className="min-w-[250px] dark:bg-gray-900/70 flex-shrink-0 hover:shadow-xl transition-shadow duration-300">
+                <CardContent className="p-6 text-center ">
                   <div className="text-4xl mb-4">{tip.icon}</div>
                   <h3 className="font-semibold mb-2">{tip.title}</h3>
                   <p className="text-gray-700 dark:text-gray-300 text-sm">{tip.desc}</p>

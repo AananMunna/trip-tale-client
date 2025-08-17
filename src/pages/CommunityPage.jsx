@@ -93,7 +93,7 @@ const CommunityPage = () => {
             <Card
               key={story._id}
               onClick={() => openStory(idx)}
-              className="cursor-pointer hover:shadow-lg transition-shadow duration-200 overflow-hidden"
+              className="cursor-pointer hover:shadow-lg transition-shadow duration-200 overflow-hidden dark:bg-gray-900/70"
             >
               <CardHeader className="p-0 relative">
                 <img

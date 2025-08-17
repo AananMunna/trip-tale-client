@@ -70,7 +70,7 @@ export default function TravelerReviews() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {reviews.map((review) => (
-            <Card key={review.id} className="p-6 shadow-lg rounded-2xl hover:shadow-2xl transition-all duration-300">
+            <Card key={review.id} className="p-6 dark:bg-gray-900/70 shadow-lg rounded-2xl hover:shadow-2xl transition-all duration-300">
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

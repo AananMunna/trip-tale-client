@@ -101,7 +101,7 @@ export default function TourismAndGuideTabs() {
                   key={guide._id}
                   className="rounded-xl shadow-md p-6 text-center hover:shadow-xl transition-shadow duration-300 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700"
                 >
-                  <Avatar src={guide.photo} alt={guide.name} className="w-24 h-24 mx-auto mb-4 border-4 border-emerald-300 dark:border-emerald-500" />
+                  <img src={guide?.photo} alt={guide.name} className="w-24 h-24 mx-auto mb-4 border-4 border-emerald-300 dark:border-emerald-500" />
                   <h3 className="text-lg font-bold">{guide.name}</h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{guide.expertise || "Tour Expert"}</p>
                   <Link to={`/guide/${guide._id}`}>

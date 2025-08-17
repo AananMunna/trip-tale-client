@@ -71,7 +71,7 @@ export default function OverviewSection() {
           {features.map((feature, i) => (
             <Card
               key={i}
-              className="relative p-6 shadow-lg rounded-2xl hover:shadow-2xl transition-all duration-300"
+              className="relative p-6 shadow-lg dark:bg-gray-900/70 rounded-2xl hover:shadow-2xl transition-all duration-300"
             >
               {/* Ribbon */}
               <Badge className="absolute top-4 right-4">{feature.ribbon}</Badge>
