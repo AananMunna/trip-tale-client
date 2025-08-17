@@ -15,8 +15,8 @@ function App() {
       <Hero></Hero>
       <OverviewSection></OverviewSection>
       <TourismAndGuideTabs></TourismAndGuideTabs>
-      <EcoFriendlyTips></EcoFriendlyTips>
       <AdventurePackages></AdventurePackages>
+      <EcoFriendlyTips></EcoFriendlyTips>
       <TouristStoriesSection></TouristStoriesSection>
       <TravelerReviews></TravelerReviews>
       <CulinaryTrails></CulinaryTrails>

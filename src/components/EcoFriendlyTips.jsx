@@ -22,7 +22,7 @@ export default function EcoFriendlyTipsSection() {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-6 py-20 mb-20 bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-500">
+    <section className="max-w-7xl mx-auto mt-20 px-6 py-20 mb-20 bg-gradient-to-br from-white to-slate-50 dark:from-gray-900 dark:to-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-500">
       <h2 className="text-4xl font-extrabold text-center mb-12 tracking-tight text-gray-900 dark:text-white">
         🌱 Eco-Friendly Travel Tips
       </h2>

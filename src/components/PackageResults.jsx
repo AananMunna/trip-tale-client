@@ -1,14 +1,35 @@
 import { Link } from "react-router";
 import { Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PackageResults = ({ packagesData, filters, handlePageChange, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[300px]">
-        <div className="text-center">
-          <span className="loading loading-bars loading-lg text-emerald-500" />
-          <p className="text-gray-500 mt-2">Loading trips...</p>
+      <div className="flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="relative group rounded-2xl overflow-hidden shadow-md">
+              <Skeleton className="w-full h-72 rounded-2xl" />
+              <div className="absolute inset-0 flex flex-col justify-end p-6 space-y-3">
+                <Skeleton className="h-7 w-3/4 bg-gray-300 dark:bg-gray-700" />
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-4 bg-gray-300 dark:bg-gray-700 rounded-full" />
+                  <Skeleton className="h-4 w-1/3 bg-gray-300 dark:bg-gray-700" />
+                </div>
+                <Skeleton className="h-6 w-1/4 bg-gray-300 dark:bg-gray-700 mt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Skeleton Pagination */}
+        <div className="flex justify-center mt-8 gap-2">
+          <Skeleton className="h-10 w-24 rounded-md" />
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton key={index} className="h-10 w-10 rounded-md" />
+          ))}
+          <Skeleton className="h-10 w-24 rounded-md" />
         </div>
       </div>
     );
