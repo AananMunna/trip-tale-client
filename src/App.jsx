@@ -13,8 +13,8 @@ function App() {
     <div>
       <Hero></Hero>
       <OverviewSection></OverviewSection>
-      <AdventurePackages></AdventurePackages>
       <TourismAndGuideTabs></TourismAndGuideTabs>
+      <AdventurePackages></AdventurePackages>
       <TouristStoriesSection></TouristStoriesSection>
       <EcoFriendlyTips></EcoFriendlyTips>
       <CulinaryTrails></CulinaryTrails>
