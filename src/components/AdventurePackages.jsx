@@ -25,7 +25,7 @@ export default function AdventurePackages() {
   if (isError) return <p className="text-center py-10 text-red-500">Failed to load packages.</p>;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-emerald-50 to-white dark:from-zinc-900 dark:to-black transition-colors duration-500">
+    <section className="py-16 bg-gradient-to-b from-emerald-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500">
       <div className="max-w-6xl mx-auto px-6 space-y-8">
 
         {/* Featured Image */}
