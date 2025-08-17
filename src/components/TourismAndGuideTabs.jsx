@@ -25,6 +25,7 @@ const { data: guides = [], isPending, isError } = useQuery({
   },
 });
 
+console.log(isError);
 
   return (
     <section className="px-4 py-16 max-w-7xl mx-auto text-gray-800 dark:text-white transition-colors duration-300 rounded-xl">
