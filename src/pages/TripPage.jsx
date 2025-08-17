@@ -1,36 +1,168 @@
-import React from "react";
-import { Link } from "react-router"; // ✅ fixed import
+import React, { useState, useEffect } from "react";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Compass, PlaneTakeoff } from "lucide-react";
-// import FindTripWithAI from "./FindTripWithAI_NewFeature/FindTripWithAI";
+import { PlaneTakeoff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+// Import components
+import SearchAndSortBar from "../components/SearchAndSortBar";
+import MobileFiltersSheet from "../components/MobileFiltersSheet";
+import ActiveFilters from "../components/ActiveFilters";
+import FiltersSidebar from "../components/FiltersSidebar";
+import PackageResults from "../components/PackageResults";
 
 const TripPage = () => {
   const axiosSecure = useAxiosSecure();
+  const [filters, setFilters] = useState({
+    search: "",
+    minPrice: 0,
+    maxPrice: 10000,
+    duration: "",
+    tourType: [],
+    sortBy: "",
+    page: 1,
+    limit: 12,
+  });
+  const [activeFilters, setActiveFilters] = useState([]);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Extract unique tour types for filter options
+  const tourTypes = [
+    "Nature",
+    "Adventure",
+    "Cultural",
+    "Beach",
+    "Historical",
+    "Wildlife",
+    "Hiking",
+    "Religious",
+  ];
+
+  const durations = [
+    "1 Day",
+    "2 Days",
+    "3 Days",
+    "4 Days",
+    "5 Days",
+    "1 Week",
+    "2 Weeks",
+    "3 Weeks+",
+  ];
 
   const fetchPackages = async () => {
-    const { data } = await axiosSecure.get("/packages");
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        value.forEach((v) => params.append(key, v));
+      } else if (value) {
+        params.append(key, value);
+      }
+    });
+
+    const { data } = await axiosSecure.get(
+      `/packages/filter?${params.toString()}`
+    );
     return data;
   };
 
   const {
-    data: packages = [],
+    data: packagesData = { packages: [], total: 0 },
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["packages"],
+    queryKey: ["packages", filters],
     queryFn: fetchPackages,
   });
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center gap-3">
-        <span className="loading loading-bars loading-lg text-emerald-500" />
-        <p className="text-gray-500">Fetching your next adventure...</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Update active filters whenever filters change
+    const newActiveFilters = [];
+    if (filters.search) newActiveFilters.push(`Search: ${filters.search}`);
+    if (filters.minPrice > 0 || filters.maxPrice < 10000) {
+      newActiveFilters.push(`Price: ৳${filters.minPrice}-৳${filters.maxPrice}`);
+    }
+    if (filters.duration)
+      newActiveFilters.push(`Duration: ${filters.duration}`);
+    if (filters.tourType.length > 0) {
+      newActiveFilters.push(`Types: ${filters.tourType.join(", ")}`);
+    }
+    if (filters.sortBy) {
+      const sortLabels = {
+        "price-low": "Price: Low to High",
+        "price-high": "Price: High to Low",
+        duration: "Duration",
+        popular: "Popular",
+      };
+      newActiveFilters.push(`Sort: ${sortLabels[filters.sortBy]}`);
+    }
+    setActiveFilters(newActiveFilters);
+  }, [filters]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
+  };
+
+  const handleTourTypeChange = (type) => {
+    setFilters((prev) => {
+      const newTypes = prev.tourType.includes(type)
+        ? prev.tourType.filter((t) => t !== type)
+        : [...prev.tourType, type];
+      return { ...prev, tourType: newTypes, page: 1 };
+    });
+  };
+
+  const handlePriceChange = (value) => {
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: value[0],
+      maxPrice: value[1],
+      page: 1,
+    }));
+  };
+
+  const removeFilter = (filterIndex) => {
+    const filterText = activeFilters[filterIndex];
+
+    if (filterText.startsWith("Search:")) {
+      handleFilterChange("search", "");
+    } else if (filterText.startsWith("Price:")) {
+      handleFilterChange("minPrice", 0);
+      handleFilterChange("maxPrice", 10000);
+    } else if (filterText.startsWith("Duration:")) {
+      handleFilterChange("duration", "");
+    } else if (filterText.startsWith("Types:")) {
+      handleFilterChange("tourType", []);
+    } else if (filterText.startsWith("Sort:")) {
+      handleFilterChange("sortBy", "");
+    }
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      search: "",
+      minPrice: 0,
+      maxPrice: 10000,
+      duration: "",
+      tourType: [],
+      sortBy: "",
+      page: 1,
+      limit: 12,
+    });
+  };
+
+  const activeFiltersCount = [
+    filters.search ? 1 : 0,
+    filters.minPrice > 0 || filters.maxPrice < 10000 ? 1 : 0,
+    filters.duration ? 1 : 0,
+    filters.tourType.length,
+    filters.sortBy ? 1 : 0,
+  ].reduce((a, b) => a + b, 0);
+
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (isError) {
     return (
@@ -40,50 +172,57 @@ const TripPage = () => {
     );
   }
 
-  if (packages.length === 0) {
-    return (
-      <div className="text-center h-screen flex justify-center items-center flex-col py-20 text-gray-500 dark:text-gray-400">
-        <PlaneTakeoff className="w-12 h-12 mx-auto mb-4 text-emerald-500" />
-        <p>No trips available at the moment. Stay tuned!</p>
-      </div>
-    );
-  }
-
   return (
-    <section className="max-w-7xl mx-auto px-4 py-20">
-      <h1 className="text-4xl font-extrabold text-center text-gray-800 dark:text-white mb-12 tracking-tight">
-        Explore Our Top Trips
+    <section className="max-w-7xl mx-auto px-4 py-22 sm:py-22">
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 dark:text-white mb-8 tracking-tight">
+        Explore Our Trips
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {packages.map((pkg) => (
-          <Link
-            key={pkg._id}
-            to={`/packages/${pkg._id}`}
-            className="relative group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500"
-          >
-            <img
-              src={pkg.images?.[0] || "https://source.unsplash.com/800x600/?travel"}
-              alt={pkg.title}
-              className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition duration-500 flex flex-col justify-end p-6">
-              <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                {pkg.title}
-              </h2>
+      <SearchAndSortBar
+        filters={filters}
+        handleFilterChange={handleFilterChange}
+      />
 
-             
+      <MobileFiltersSheet
+        isMobileFiltersOpen={isMobileFiltersOpen}
+        setIsMobileFiltersOpen={setIsMobileFiltersOpen}
+        filters={filters}
+        tourTypes={tourTypes}
+        durations={durations}
+        handlePriceChange={handlePriceChange}
+        handleTourTypeChange={handleTourTypeChange}
+        handleFilterChange={handleFilterChange}
+        clearAllFilters={clearAllFilters}
+        activeFiltersCount={activeFiltersCount}
+        packagesData={packagesData}
+      />
 
-              <p className="text-sm text-gray-200 flex items-center gap-1">
-                <Compass className="w-4 h-4" /> {pkg.tourType || "Adventure"}
-              </p>
+      <ActiveFilters
+        activeFilters={activeFilters}
+        removeFilter={removeFilter}
+        clearAllFilters={clearAllFilters}
+      />
 
-              <p className="text-lg font-semibold text-white mt-2">
-                ৳{pkg.price}
-              </p>
-            </div>
-          </Link>
-        ))}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Hidden on mobile, visible on lg screens and up */}
+        <div className="hidden lg:block">
+          <FiltersSidebar
+            filters={filters}
+            tourTypes={tourTypes}
+            durations={durations}
+            handlePriceChange={handlePriceChange}
+            handleTourTypeChange={handleTourTypeChange}
+            handleFilterChange={handleFilterChange}
+            clearAllFilters={clearAllFilters}
+          />
+        </div>
+
+        <PackageResults
+          packagesData={packagesData}
+          filters={filters}
+          handlePageChange={handlePageChange}
+          isLoading={isLoading}
+        />
       </div>
     </section>
   );
