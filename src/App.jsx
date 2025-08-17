@@ -6,17 +6,19 @@ import Hero from "./components/Hero";
 import OverviewSection from "./components/OverviewSection";
 import TourismAndGuideTabs from "./components/TourismAndGuideTabs";
 import TouristStoriesSection from "./components/TouristStoriesSection";
+import TravelerReviews from "./components/TravelerReviews";
 
 function App() {
   return (
     <div>
       <Hero></Hero>
       <OverviewSection></OverviewSection>
+      <AdventurePackages></AdventurePackages>
       <TourismAndGuideTabs></TourismAndGuideTabs>
       <TouristStoriesSection></TouristStoriesSection>
       <EcoFriendlyTips></EcoFriendlyTips>
       <CulinaryTrails></CulinaryTrails>
-      <AdventurePackages></AdventurePackages>
+      <TravelerReviews></TravelerReviews>
     </div>
   );
 }
