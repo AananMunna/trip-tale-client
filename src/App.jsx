@@ -18,8 +18,8 @@ function App() {
       <EcoFriendlyTips></EcoFriendlyTips>
       <AdventurePackages></AdventurePackages>
       <TouristStoriesSection></TouristStoriesSection>
-      <CulinaryTrails></CulinaryTrails>
       <TravelerReviews></TravelerReviews>
+      <CulinaryTrails></CulinaryTrails>
       <FAQSection></FAQSection>
     </div>
   );

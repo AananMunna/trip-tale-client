@@ -18,14 +18,14 @@ export default function AdventurePackages() {
   });
 
   const [activeImage, setActiveImage] = useState(
-    packages[0]?.images[0] || "https://via.placeholder.com/800"
+    packages[0]?.images[0] || "https://i.ibb.co/JFc7ZFyV/md-akil-khan-q-o-Od-JIe-WY-unsplash-min.jpg"
   );
 
   if (isLoading) return <p className="text-center py-10">Loading Packages...</p>;
   if (isError) return <p className="text-center py-10 text-red-500">Failed to load packages.</p>;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-emerald-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500">
+    <section className="py-16 bg-gradient-to-b from-emerald-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500 rounded-2xl">
       <div className="max-w-6xl mx-auto px-6 space-y-8">
 
         {/* Featured Image */}
