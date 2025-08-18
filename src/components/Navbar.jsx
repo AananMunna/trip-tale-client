@@ -1,11 +1,5 @@
 import { useContext, useState, useEffect, useRef } from "react";
-import {
-  FaSun,
-  FaMoon,
-  FaBars,
-  FaTimes,
-  FaHome,
-} from "react-icons/fa";
+import { FaSun, FaMoon, FaBars, FaTimes, FaHome } from "react-icons/fa";
 import { Link, NavLink } from "react-router";
 import { AuthContext } from "../context/AuthProvider";
 import { ThemeContext } from "../context/ThemeContext";
@@ -17,7 +11,7 @@ export default function Navbar() {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
-  const { user,userRole } = useContext(AuthContext);
+  const { user, userRole } = useContext(AuthContext);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -60,7 +54,7 @@ export default function Navbar() {
       className={`top-0 left-0 right-0 z-50 fixed transition-colors duration-300 ${
         hasScrolled
           ? "bg-white/90 dark:bg-gray-900/80 backdrop-blur-md shadow-md border-b border-gray-200 dark:border-gray-700"
-          : "bg-transparent"
+          : "bg-white/10 backdrop-blur-md"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -78,9 +72,6 @@ export default function Navbar() {
           </motion.span>
           TripTale
         </Link>
-        
-
-
 
         {/* Desktop Links */}
         <div className="hidden lg:flex gap-6 items-center">
@@ -109,7 +100,7 @@ export default function Navbar() {
     💬 Chat
   </Link>
 )} */}
-{/* {userRole === 'guide' && (
+          {/* {userRole === 'guide' && (
   <Link to="/guide-inbox" className="text-white bg-green-600 px-3 py-1 rounded">
     📥 Inbox
   </Link>
@@ -139,7 +130,11 @@ export default function Navbar() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="lg:hidden p-2 rounded-full text-teal-700 dark:text-white hover:bg-teal-100 dark:hover:bg-teal-800"
           >
-            {isMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
+            {isMenuOpen ? (
+              <FaTimes className="text-xl" />
+            ) : (
+              <FaBars className="text-xl" />
+            )}
           </button>
         </div>
       </div>
